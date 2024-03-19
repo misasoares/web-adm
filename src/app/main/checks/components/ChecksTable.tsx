@@ -1,6 +1,19 @@
+import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { useAppSelector } from 'app/store/hooks';
 
 export default function ChecksTable() {
+	const checks = useAppSelector(state => state.checks);
+
+	function formatDate(dateParam: Date) {
+		const date = new Date(dateParam);
+		const day = date.getDate();
+		const month = date.getMonth() + 1;
+		const year = date.getFullYear();
+
+		return `${day}/${month}/${year}`;
+	}
+
 	return (
 		<div className="p-32">
 			<Paper
@@ -23,20 +36,26 @@ export default function ChecksTable() {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{/* {rows.map(row => (
+							{checks.checks.map(row => (
 								<TableRow
-									key={row.name}
+									key={row.uid}
 									sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 								>
+									<TableCell>{row.payerName}</TableCell>
 									<TableCell
 										component="th"
 										scope="row"
 									>
-										{row.name}
+										{row.accNumber}
 									</TableCell>
-									<TableCell align="right">{row.calories}</TableCell>
+									<TableCell>{row.value}</TableCell>
+									<TableCell>{formatDate(row.dueDate)}</TableCell>
+									<TableCell className="flex">
+										<FuseSvgIcon>heroicons-outline:pencil</FuseSvgIcon>
+										<FuseSvgIcon>heroicons-outline:eye</FuseSvgIcon>
+									</TableCell>
 								</TableRow>
-							))} */}
+							))}
 						</TableBody>
 					</Table>
 				</TableContainer>
