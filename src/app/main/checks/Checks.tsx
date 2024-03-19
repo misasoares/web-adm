@@ -1,10 +1,11 @@
-import { Typography } from '@mui/material';
+import ChecksTable from './components/ChecksTable';
+import CheckCreateComponent from './components/CreateCheck';
 
 export default function ChecksPage() {
 	return (
 		<>
-			<Typography> Listagem de cheques</Typography>
-			<Typography>Aqui vai listar os cheques</Typography>
+			<CheckCreateComponent />
+			<ChecksTable />
 		</>
 	);
 }
