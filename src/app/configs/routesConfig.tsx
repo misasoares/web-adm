@@ -1,19 +1,19 @@
-import FuseUtils from '@fuse/utils';
 import FuseLoading from '@fuse/core/FuseLoading';
-import { Navigate } from 'react-router-dom';
-import settingsConfig from 'app/configs/settingsConfig';
+import FuseUtils from '@fuse/utils';
 import { FuseRouteConfigsType, FuseRoutesType } from '@fuse/utils/FuseUtils';
-import SignInConfig from '../main/sign-in/SignInConfig';
-import SignUpConfig from '../main/sign-up/SignUpConfig';
-import SignOutConfig from '../main/sign-out/SignOutConfig';
+import settingsConfig from 'app/configs/settingsConfig';
+import { Navigate } from 'react-router-dom';
 import Error404Page from '../main/404/Error404Page';
-import PagesConfigs from '../main/pages/pagesConfigs';
-import DashboardsConfigs from '../main/dashboards/dashboardsConfigs';
 import AppsConfigs from '../main/apps/appsConfigs';
-import UserInterfaceConfigs from '../main/user-interface/UserInterfaceConfigs';
-import DocumentationConfig from '../main/documentation/DocumentationConfig';
 import authRoleExamplesConfigs from '../main/auth/authRoleExamplesConfigs';
 import ChecksConfig from '../main/checks/ChecksConfig';
+import DashboardsConfigs from '../main/dashboards/dashboardsConfigs';
+import DocumentationConfig from '../main/documentation/DocumentationConfig';
+import PagesConfigs from '../main/pages/pagesConfigs';
+import SignInConfig from '../main/sign-in/SignInConfig';
+import SignOutConfig from '../main/sign-out/SignOutConfig';
+import SignUpConfig from '../main/sign-up/SignUpConfig';
+import UserInterfaceConfigs from '../main/user-interface/UserInterfaceConfigs';
 
 const routeConfigs: FuseRouteConfigsType = [
 	SignOutConfig,
