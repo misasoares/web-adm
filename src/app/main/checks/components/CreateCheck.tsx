@@ -5,6 +5,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ptBR } from 'date-fns/locale';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
+import { addCheck } from '../store/checksSlice';
 
 const schema = z.object({
 	accName: z.string().min(2, 'É necessário adicionar o nome da conta.'),
@@ -37,6 +39,9 @@ const defaultValues = {
 };
 
 export default function CheckCreateComponent() {
+	const checks = useAppSelector(state => state.checks);
+	const dispatch = useAppDispatch();
+
 	const {
 		handleSubmit,
 		control,
@@ -49,7 +54,7 @@ export default function CheckCreateComponent() {
 	});
 
 	function onSubmit(data) {
-		console.log(data);
+		dispatch(addCheck(data));
 	}
 
 	function handleCancelSubmit() {
