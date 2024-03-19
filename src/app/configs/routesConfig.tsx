@@ -13,12 +13,14 @@ import AppsConfigs from '../main/apps/appsConfigs';
 import UserInterfaceConfigs from '../main/user-interface/UserInterfaceConfigs';
 import DocumentationConfig from '../main/documentation/DocumentationConfig';
 import authRoleExamplesConfigs from '../main/auth/authRoleExamplesConfigs';
+import ChecksConfig from '../main/checks/ChecksConfig';
 
 const routeConfigs: FuseRouteConfigsType = [
 	SignOutConfig,
 	SignInConfig,
 	SignUpConfig,
 	DocumentationConfig,
+	ChecksConfig,
 	...PagesConfigs,
 	...UserInterfaceConfigs,
 	...DashboardsConfigs,
