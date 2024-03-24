@@ -1,10 +1,9 @@
 import FuseScrollbars from '@fuse/core/FuseScrollbars';
 import { styled } from '@mui/material/styles';
+import NavbarToggleButton from 'app/theme-layouts/shared-components/navbar/NavbarToggleButton';
+import Navigation from 'app/theme-layouts/shared-components/navigation/Navigation';
 import clsx from 'clsx';
 import { memo } from 'react';
-import Navigation from 'app/theme-layouts/shared-components/navigation/Navigation';
-import NavbarToggleButton from 'app/theme-layouts/shared-components/navbar/NavbarToggleButton';
-import Logo from '../../../../shared-components/Logo';
 import UserNavbarHeader from '../../../../shared-components/UserNavbarHeader';
 
 const Root = styled('div')(({ theme }) => ({
@@ -44,11 +43,7 @@ function NavbarStyle1Content(props: NavbarStyle1ContentProps) {
 
 	return (
 		<Root className={clsx('flex h-full flex-auto flex-col overflow-hidden', className)}>
-			<div className="flex h-48 shrink-0 flex-row items-center px-20 md:h-72">
-				<div className="mx-4 flex flex-1">
-					<Logo />
-				</div>
-
+			<div className="flex h-48 shrink-0 flex-row items-center justify-end px-20 md:h-72">
 				<NavbarToggleButton className="h-40 w-40 p-0" />
 			</div>
 
@@ -62,8 +57,8 @@ function NavbarStyle1Content(props: NavbarStyle1ContentProps) {
 
 				<div className="flex-0 flex items-center justify-center py-48 opacity-10">
 					<img
-						className="w-full max-w-64"
-						src="assets/images/logo/logo.svg"
+						className="w-full max-w-92"
+						src="assets/images/logo/logo-ms-adm.png"
 						alt="footer logo"
 					/>
 				</div>
