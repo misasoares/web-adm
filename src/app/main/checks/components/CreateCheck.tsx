@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Autocomplete, Button, Paper, TextField, Typography } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { useAppDispatch, useAppSelector } from 'app/store/hooks';
+import { useAppDispatch } from 'app/store/hooks';
 import axios from 'axios';
 import { ptBR } from 'date-fns/locale';
 import { ChangeEvent, useEffect, useState } from 'react';
@@ -24,10 +24,9 @@ const defaultValues = {
 };
 
 export default function CheckCreateComponent() {
-	const checks = useAppSelector((state) => state.checks);
 	const dispatch = useAppDispatch();
 	const [accNameValue, setAccNameValue] = useState('');
-	const [accOptions, setAccOptions] = useState<string[]>([]);
+	const [accOptions, setAccOptions] = useState<IAccountBank[]>([]);
 	const [optionsBank, setOptionsBank] = useState<string[]>([]);
 
 	const {
@@ -47,15 +46,18 @@ export default function CheckCreateComponent() {
 		const isThereAcc = await axios.get<IAccountBank[]>(`http://localhost:8080/api/checks/${params}`);
 		const { data } = isThereAcc;
 
-		return data;
+		if (accNameValue) {
+			return data;
+		}
+
+		return [];
 	}
 
 	useEffect(() => {
 		const fetchData = async () => {
 			const accounts = await findAcc(accNameValue);
 
-			const optionsToAcc = accounts.map((acc) => acc.name);
-			setAccOptions(optionsToAcc);
+			setAccOptions(accounts);
 
 			if (accNameValue) {
 				const accSelected = accounts.find((item) => item.name === accNameValue);
@@ -132,7 +134,8 @@ export default function CheckCreateComponent() {
 						noOptionsText="Adicione uma nova conta"
 						options={accOptions}
 						sx={{ width: 250 }}
-						value={accNameValue}
+						getOptionLabel={(option) => option.name}
+						// value={accNameValue}
 						onChange={handleSelectAccount}
 						renderInput={(params) => (
 							<TextField
