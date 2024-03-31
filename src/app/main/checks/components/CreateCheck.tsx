@@ -1,30 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Typography, Paper, TextField, Button } from '@mui/material';
+import { Autocomplete, Button, Paper, TextField, Typography } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { ptBR } from 'date-fns/locale';
-import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-import { addCheck } from '../store/checksSlice';
+import axios from 'axios';
+import { ptBR } from 'date-fns/locale';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { addChecks } from '../store/checksSlice';
 
-const schema = z.object({
-	accName: z.string().min(2, 'É necessário adicionar o nome da conta.'),
-	bank: z.string().min(2, 'É necessário adicionar o banco.'),
-	accNumber: z.string().min(2, 'É necessário adicionar o número de conta.'),
-	agencyNumber: z.string().min(2, 'É necessário adicionar a agência.'),
-	payerName: z.string().min(2, 'É necessário adicionar o pagador.'),
-	checkNumber: z.string().min(2, 'É necessário adicionar o número do cheque.'),
-	payerPhone: z.string().min(2, 'É necessário adicionar o número de telefone do pagador.'),
-	sendTo: z.string().optional(),
-	dueDate: z.date({
-		required_error: 'É necessário adicionar uma data de vencimento.',
-		invalid_type_error: 'É necessário adicionar uma data de vencimento.'
-	}),
-	value: z.string().min(1, 'É necessário adicionar o valor.')
-});
-
-type SchemaCheckType = z.infer<typeof schema>;
+import { IAccountBank, SchemaCheckType, schemaZod } from '../types/ChecksFormTypes';
 
 const defaultValues = {
 	accName: '',
@@ -39,22 +24,85 @@ const defaultValues = {
 };
 
 export default function CheckCreateComponent() {
-	const checks = useAppSelector(state => state.checks);
+	const checks = useAppSelector((state) => state.checks);
 	const dispatch = useAppDispatch();
+	const [accNameValue, setAccNameValue] = useState('');
+	const [accOptions, setAccOptions] = useState<string[]>([]);
+	const [optionsBank, setOptionsBank] = useState<string[]>([]);
 
 	const {
 		handleSubmit,
 		control,
 		formState: { errors },
-		reset
+		reset,
+		setValue,
+		watch
 	} = useForm<SchemaCheckType>({
 		mode: 'onChange',
 		defaultValues,
-		resolver: zodResolver(schema)
+		resolver: zodResolver(schemaZod)
 	});
 
-	function onSubmit(data) {
-		dispatch(addCheck(data));
+	async function findAcc(params: string) {
+		const isThereAcc = await axios.get<IAccountBank[]>(`http://localhost:8080/api/checks/${params}`);
+		const { data } = isThereAcc;
+
+		return data;
+	}
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const accounts = await findAcc(accNameValue);
+
+			const optionsToAcc = accounts.map((acc) => acc.name);
+			setAccOptions(optionsToAcc);
+
+			if (accNameValue) {
+				const accSelected = accounts.find((item) => item.name === accNameValue);
+
+				if (accSelected) {
+					const optionsToBank = accSelected.Banks.map((item) => item.name);
+					setOptionsBank(optionsToBank);
+
+					if (watch('bank')) {
+						const findBank = accSelected.Banks.find((item) => item.name === watch('bank'));
+
+						if (findBank) {
+							setValue('accNumber', findBank.accNumber);
+							setValue('agencyNumber', findBank.agencyNumber);
+						}
+					}
+				}
+			}
+		};
+
+		fetchData();
+	}, [accNameValue, watch('bank')]);
+
+	function handleFindAccName(ev: ChangeEvent<HTMLInputElement>) {
+		const { value } = ev.target;
+		setAccNameValue(value);
+		setValue('accName', value);
+	}
+
+	function handleSelectAccount(ev: ChangeEvent<HTMLInputElement>) {
+		const { outerText } = ev.target;
+		setAccNameValue(outerText);
+		setValue('accName', outerText);
+	}
+
+	function handleInputBank(ev: ChangeEvent<HTMLInputElement>) {
+		const { value } = ev.target;
+		setValue('bank', value);
+	}
+
+	function handleChangeBank(ev: ChangeEvent<HTMLInputElement>) {
+		const { outerText } = ev.target;
+		setValue('bank', outerText);
+	}
+
+	function onSubmit(data: SchemaCheckType) {
+		dispatch(addChecks(data));
 	}
 
 	function handleCancelSubmit() {
@@ -78,18 +126,44 @@ export default function CheckCreateComponent() {
 					onSubmit={handleSubmit(onSubmit)}
 					className="flex justify-center items-center sm:justify-start gap-24 flex-wrap"
 				>
-					<Controller
-						control={control}
-						name="bank"
-						render={({ field }) => (
+					<Autocomplete
+						disablePortal
+						id="combo-box-demo"
+						noOptionsText="Adicione uma nova conta"
+						options={accOptions}
+						sx={{ width: 250 }}
+						value={accNameValue}
+						onChange={handleSelectAccount}
+						renderInput={(params) => (
 							<TextField
-								{...field}
+								{...params}
+								onChange={handleFindAccName}
+								error={!!errors.accName?.message}
+								helperText={errors.accName?.message}
+								label="Nome da conta"
+							/>
+						)}
+					/>
+
+					<Autocomplete
+						disablePortal
+						id="combo-box-demo"
+						noOptionsText="Adicione um novo banco"
+						value={watch('bank')}
+						onChange={handleChangeBank}
+						options={optionsBank}
+						sx={{ width: 250 }}
+						renderInput={(params) => (
+							<TextField
 								error={!!errors.bank?.message}
 								helperText={errors.bank?.message}
+								onChange={handleInputBank}
+								{...params}
 								label="Banco"
 							/>
 						)}
 					/>
+
 					<Controller
 						control={control}
 						name="accNumber"
@@ -126,18 +200,7 @@ export default function CheckCreateComponent() {
 							/>
 						)}
 					/>
-					<Controller
-						control={control}
-						name="accName"
-						render={({ field }) => (
-							<TextField
-								error={!!errors.accName?.message}
-								helperText={errors.accName?.message}
-								{...field}
-								label="Nome da conta"
-							/>
-						)}
-					/>
+
 					<Controller
 						control={control}
 						name="payerName"

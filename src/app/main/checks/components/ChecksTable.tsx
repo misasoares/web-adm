@@ -3,7 +3,7 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 import { useAppSelector } from 'app/store/hooks';
 
 export default function ChecksTable() {
-	const checks = useAppSelector(state => state.checks);
+	const checks = useAppSelector((state) => state.checks);
 
 	function formatDate(dateParam: Date) {
 		const date = new Date(dateParam);
@@ -36,7 +36,7 @@ export default function ChecksTable() {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{checks.checks.map(row => (
+							{checks.checks.map((row) => (
 								<TableRow
 									key={row.uid}
 									sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -46,7 +46,7 @@ export default function ChecksTable() {
 										component="th"
 										scope="row"
 									>
-										{row.accNumber}
+										{row.AccountBank.name}
 									</TableCell>
 									<TableCell>{row.value}</TableCell>
 									<TableCell>{formatDate(row.dueDate)}</TableCell>
