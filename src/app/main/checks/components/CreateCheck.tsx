@@ -44,6 +44,7 @@ export default function CheckCreateComponent() {
 
 	async function findAcc(params: string) {
 		const isThereAcc = await axios.get<IAccountBank[]>(`https://api-rapidoms-v3.onrender.com/api/checks/${params}`);
+
 		const { data } = isThereAcc;
 
 		if (accNameValue) {
@@ -83,12 +84,13 @@ export default function CheckCreateComponent() {
 
 	function handleFindAccName(ev: ChangeEvent<HTMLInputElement>) {
 		const { value } = ev.target;
+		setAccNameValue(value);
 		setValue('accName', value);
 	}
 
 	function handleSelectAccount(ev: ChangeEvent<HTMLInputElement>) {
 		const { outerText } = ev.target;
-		// setAccNameValue(outerText);
+		setAccNameValue(outerText);
 		setValue('accName', outerText);
 	}
 
@@ -109,8 +111,7 @@ export default function CheckCreateComponent() {
 	function handleCancelSubmit() {
 		reset();
 	}
-	console.log(accOptions, 'accOptions');
-	console.log(watch('accName'), 'watch(accName)');
+
 	return (
 		<div className="p-32">
 			<Paper
