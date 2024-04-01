@@ -6,7 +6,7 @@ const axiosBaseQuery =
 	(): BaseQueryFn<AxiosRequestConfig<unknown>, unknown, AxiosError> =>
 	async ({ url, method, data, params }) => {
 		try {
-			Axios.defaults.baseURL = 'http://localhost:8080/api/';
+			Axios.defaults.baseURL = 'https://api-rapidoms-v3.onrender.com/api/';
 			const result = await Axios({
 				url,
 				method,
@@ -38,10 +38,10 @@ interface TestTemp {
 }
 
 export const apiService = createApi({
-	baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080/api/' }),
-	endpoints: builder => ({
+	baseQuery: fetchBaseQuery({ baseUrl: 'https://api-rapidoms-v3.onrender.com/api/' }),
+	endpoints: (builder) => ({
 		searchChecks: builder.query<TestTemp[], string>({
-			query: params => `checks/${params}`
+			query: (params) => `checks/${params}`
 		})
 	})
 });

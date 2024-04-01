@@ -26,7 +26,7 @@ const defaultValues = {
 export default function CheckCreateComponent() {
 	const dispatch = useAppDispatch();
 	const [accNameValue, setAccNameValue] = useState('');
-	const [accOptions, setAccOptions] = useState<IAccountBank[]>([]);
+	const [accOptions, setAccOptions] = useState<string[]>([]);
 	const [optionsBank, setOptionsBank] = useState<string[]>([]);
 
 	const {
@@ -43,7 +43,7 @@ export default function CheckCreateComponent() {
 	});
 
 	async function findAcc(params: string) {
-		const isThereAcc = await axios.get<IAccountBank[]>(`http://localhost:8080/api/checks/${params}`);
+		const isThereAcc = await axios.get<IAccountBank[]>(`https://api-rapidoms-v3.onrender.com/api/checks/${params}`);
 		const { data } = isThereAcc;
 
 		if (accNameValue) {
@@ -57,7 +57,7 @@ export default function CheckCreateComponent() {
 		const fetchData = async () => {
 			const accounts = await findAcc(accNameValue);
 
-			setAccOptions(accounts);
+			setAccOptions(accounts.map((acc) => acc.name));
 
 			if (accNameValue) {
 				const accSelected = accounts.find((item) => item.name === accNameValue);
@@ -83,13 +83,12 @@ export default function CheckCreateComponent() {
 
 	function handleFindAccName(ev: ChangeEvent<HTMLInputElement>) {
 		const { value } = ev.target;
-		setAccNameValue(value);
 		setValue('accName', value);
 	}
 
 	function handleSelectAccount(ev: ChangeEvent<HTMLInputElement>) {
 		const { outerText } = ev.target;
-		setAccNameValue(outerText);
+		// setAccNameValue(outerText);
 		setValue('accName', outerText);
 	}
 
@@ -110,7 +109,8 @@ export default function CheckCreateComponent() {
 	function handleCancelSubmit() {
 		reset();
 	}
-
+	console.log(accOptions, 'accOptions');
+	console.log(watch('accName'), 'watch(accName)');
 	return (
 		<div className="p-32">
 			<Paper
@@ -134,8 +134,8 @@ export default function CheckCreateComponent() {
 						noOptionsText="Adicione uma nova conta"
 						options={accOptions}
 						sx={{ width: 250 }}
-						getOptionLabel={(option) => option.name}
-						// value={accNameValue}
+						value={watch('accName')}
+						// getOptionLabel={(option) => option.name}
 						onChange={handleSelectAccount}
 						renderInput={(params) => (
 							<TextField

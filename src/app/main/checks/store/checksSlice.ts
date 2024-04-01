@@ -5,13 +5,14 @@ import { SchemaCheckType } from '../types/ChecksFormTypes';
 import { CheckSliceType, ChecksType } from './types/typesSlice';
 
 export const addChecks = createAsyncThunk('checks/addChecks', async (data: SchemaCheckType) => {
-	const res = await axios.post<ChecksType>('http://localhost:8080/api/checks', data);
+	const res = await axios.post<ChecksType>('https://api-rapidoms-v3.onrender.com/api/checks', data);
 
 	return res.data;
 });
 
 export const getChecks = createAsyncThunk('checks/getChecks', async () => {
-	const res = await axios.get<ChecksType[]>('http://localhost:8080/api/checks');
+	const res = await axios.get<ChecksType[]>('https://api-rapidoms-v3.onrender.com/api/checks');
+
 	return res.data;
 });
 
