@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { Controller, useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 /**
@@ -41,12 +41,13 @@ function ModernReversedSignInPage() {
 		defaultValues,
 		resolver: zodResolver(schema)
 	});
+	const navigate = useNavigate();
 
 	const { isValid, dirtyFields, errors } = formState;
 
 	function onSubmit(data) {
-		console.log(data);
-		//reset(defaultValues);
+		reset(defaultValues);
+		navigate('/checks');
 	}
 
 	return (
