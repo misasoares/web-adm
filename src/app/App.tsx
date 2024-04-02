@@ -1,17 +1,17 @@
-import FuseLayout from '@fuse/core/FuseLayout';
-import FuseTheme from '@fuse/core/FuseTheme';
-import { SnackbarProvider } from 'notistack';
-import rtlPlugin from 'stylis-plugin-rtl';
 import createCache, { Options } from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
-import { selectCurrentLanguageDirection } from 'app/store/i18nSlice';
-import themeLayouts from 'app/theme-layouts/themeLayouts';
+import FuseLayout from '@fuse/core/FuseLayout';
 import { selectMainTheme } from '@fuse/core/FuseSettings/fuseSettingsSlice';
+import FuseTheme from '@fuse/core/FuseTheme';
 import MockAdapterProvider from '@mock-api/MockAdapterProvider';
 import { useAppSelector } from 'app/store/hooks';
+import { selectCurrentLanguageDirection } from 'app/store/i18nSlice';
+import themeLayouts from 'app/theme-layouts/themeLayouts';
+import { SnackbarProvider } from 'notistack';
 import { useSelector } from 'react-redux';
-import withAppProviders from './withAppProviders';
+import rtlPlugin from 'stylis-plugin-rtl';
 import { AuthRouteProvider } from './auth/AuthRouteProvider';
+import withAppProviders from './withAppProviders';
 
 // import axios from 'axios';
 /**

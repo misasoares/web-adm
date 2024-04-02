@@ -1,30 +1,22 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'app/store/store';
+import axios from 'axios';
+import { SchemaCheckType } from '../types/ChecksFormTypes';
+import { CheckSliceType, ChecksType } from './types/typesSlice';
 
-interface ChecksType {
-	uid?: string;
+export const addChecks = createAsyncThunk('checks/addChecks', async (data: SchemaCheckType) => {
+	const res = await axios.post<ChecksType>('https://api-rapidoms-v3.onrender.com/api/checks', data);
 
-	accName: string;
-	bank: string;
-	accNumber: string;
-	agencyNumber: string;
-	payerName: string;
-	checkNumber: string;
-	payerPhone: string;
-	sendTo?: string;
-	dueDate: Date;
-	value: string;
+	return res.data;
+});
 
-	createdAt?: Date;
-	updatedAt?: Date;
-}
+export const getChecks = createAsyncThunk('checks/getChecks', async () => {
+	const res = await axios.get<ChecksType[]>('https://api-rapidoms-v3.onrender.com/api/checks');
 
-interface CheckStateType {
-	checks: ChecksType[];
-	loading: boolean;
-}
+	return res.data;
+});
 
-const initialState: CheckStateType = {
+const initialState: CheckSliceType = {
 	checks: [],
 	loading: false
 };
@@ -32,14 +24,32 @@ const initialState: CheckStateType = {
 export const checksSlice = createSlice({
 	name: 'checks',
 	initialState,
-	reducers: {
-		addCheck(state, action: PayloadAction<ChecksType>) {
-			state.checks.push(action.payload);
-		}
+	reducers: {},
+	extraReducers: (builder) => {
+		builder
+			.addCase(addChecks.pending, (state) => {
+				state.loading = true;
+			})
+			.addCase(addChecks.fulfilled, (state, action) => {
+				state.loading = false;
+
+				if (action.payload) {
+					state.checks.push(action.payload);
+				}
+			})
+			.addCase(getChecks.pending, (state) => {
+				state.loading = true;
+			})
+			.addCase(getChecks.fulfilled, (state, action) => {
+				state.loading = false;
+
+				if (action.payload) {
+					state.checks = action.payload;
+				}
+			});
 	}
 });
 
-export const { addCheck } = checksSlice.actions;
-export const selectChecks = (state: RootState) => state?.checks;
+export const selectChecks = (state: RootState) => state.checks;
 export type checksSliceType = typeof checksSlice;
 export default checksSlice.reducer;
