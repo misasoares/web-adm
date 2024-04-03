@@ -148,6 +148,10 @@ export default function CheckCreateComponent() {
 				if (findPayer && findPayer.phone) {
 					setValue('payerPhone', findPayer.phone);
 				}
+
+				if (findPayer && !findPayer.phone) {
+					setValue('payerPhone', '');
+				}
 			}
 		};
 
