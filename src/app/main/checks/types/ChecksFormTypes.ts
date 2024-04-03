@@ -8,6 +8,7 @@ export const schemaZod = z.object({
 	payerName: z.string().min(2, 'É necessário adicionar o pagador.'),
 	checkNumber: z.string().min(2, 'É necessário adicionar o número do cheque.'),
 	payerPhone: z.string().optional(),
+	cpfOrCnpj: z.string().min(2, 'É necessário adicionar CPF ou CNPJ.'),
 	sendTo: z.string().optional(),
 	dueDate: z.date({
 		required_error: 'É necessário adicionar uma data de vencimento.',
@@ -22,6 +23,7 @@ export interface IBank {
 	uid: string;
 	accNumber: string;
 	accountBankUid: string;
+	cpfOrCnpj: string;
 	agencyNumber: string;
 	name: string;
 }
@@ -34,4 +36,10 @@ export interface IAccountBank {
 export interface IAxiosResponseGet {
 	data: IAccountBank[];
 	status: number;
+}
+
+export interface IPayerName {
+	uid: string;
+	name: string;
+	phone: string;
 }

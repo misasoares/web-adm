@@ -2,14 +2,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Autocomplete, Button, Paper, TextField, Typography } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { ptBR } from 'date-fns/locale';
 import { useAppDispatch } from 'app/store/hooks';
 import axios from 'axios';
+import { ptBR } from 'date-fns/locale';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { addChecks } from '../store/checksSlice';
 
-import { IAccountBank, SchemaCheckType, schemaZod } from '../types/ChecksFormTypes';
+import { IAccountBank, IPayerName, SchemaCheckType, schemaZod } from '../types/ChecksFormTypes';
 
 const defaultValues = {
 	accName: '',
@@ -17,6 +17,7 @@ const defaultValues = {
 	accNumber: '',
 	agencyNumber: '',
 	payerName: '',
+	cpfOrCnpj: '',
 	checkNumber: '',
 	payerPhone: '',
 	sendTo: '',
@@ -28,6 +29,7 @@ export default function CheckCreateComponent() {
 	const [accNameValue, setAccNameValue] = useState('');
 	const [accOptions, setAccOptions] = useState<string[]>([]);
 	const [optionsBank, setOptionsBank] = useState<string[]>([]);
+	const [optionsPayerName, setOptionsPayerName] = useState<string[]>([]);
 
 	const {
 		handleSubmit,
@@ -54,33 +56,15 @@ export default function CheckCreateComponent() {
 		return [];
 	}
 
-	useEffect(() => {
-		const fetchData = async () => {
-			const accounts = await findAcc(accNameValue);
+	async function findPayerName(name: string) {
+		const isTherePayerName = await axios.get<IPayerName[]>(`${import.meta.env.VITE_API_KEY}/checks/payers/${name}`);
+		const { data } = isTherePayerName;
 
-			setAccOptions(accounts.map((acc) => acc.name));
-
-			if (accNameValue) {
-				const accSelected = accounts.find((item) => item.name === accNameValue);
-
-				if (accSelected) {
-					const optionsToBank = accSelected.Banks.map((item) => item.name);
-					setOptionsBank(optionsToBank);
-
-					if (watch('bank')) {
-						const findBank = accSelected.Banks.find((item) => item.name === watch('bank'));
-
-						if (findBank) {
-							setValue('accNumber', findBank.accNumber);
-							setValue('agencyNumber', findBank.agencyNumber);
-						}
-					}
-				}
-			}
-		};
-
-		fetchData();
-	}, [accNameValue, watch('bank')]);
+		if (isTherePayerName) {
+			return data;
+		}
+		return [];
+	}
 
 	function handleFindAccName(ev: ChangeEvent<HTMLInputElement>) {
 		const { value } = ev.target;
@@ -104,6 +88,16 @@ export default function CheckCreateComponent() {
 		setValue('bank', outerText);
 	}
 
+	function handleFindAPayerName(ev: ChangeEvent<HTMLInputElement>) {
+		setValue('payerName', ev.target.value);
+	}
+
+	function handleSelectPayerName(ev: ChangeEvent<HTMLInputElement>) {
+		const { outerText } = ev.target;
+
+		setValue('payerName', outerText);
+	}
+
 	function onSubmit(data: SchemaCheckType) {
 		dispatch(addChecks(data));
 	}
@@ -111,6 +105,54 @@ export default function CheckCreateComponent() {
 	function handleCancelSubmit() {
 		reset();
 	}
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const accounts = await findAcc(accNameValue);
+
+			setAccOptions(accounts.map((acc) => acc.name));
+
+			if (accNameValue) {
+				const accSelected = accounts.find((item) => item.name === accNameValue);
+
+				if (accSelected) {
+					const optionsToBank = accSelected.Banks.map((item) => item.name);
+
+					setOptionsBank(optionsToBank);
+
+					if (watch('bank')) {
+						const findBank = accSelected.Banks.find((item) => item.name === watch('bank'));
+
+						if (findBank) {
+							setValue('accNumber', findBank.accNumber);
+							setValue('agencyNumber', findBank.agencyNumber);
+							setValue('cpfOrCnpj', findBank.cpfOrCnpj);
+						}
+					}
+				}
+			}
+		};
+
+		fetchData();
+	}, [accNameValue, watch('bank')]);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const find = await findPayerName(watch('payerName'));
+
+			setOptionsPayerName(find.map((item) => item.name));
+
+			if (watch('payerName')) {
+				const findPayer = find.find((item) => item.name === watch('payerName'));
+
+				if (findPayer && findPayer.phone) {
+					setValue('payerPhone', findPayer.phone);
+				}
+			}
+		};
+
+		fetchData();
+	}, [watch('payerName')]);
 
 	return (
 		<div className="p-32">
@@ -136,7 +178,6 @@ export default function CheckCreateComponent() {
 						options={accOptions}
 						sx={{ width: 250 }}
 						value={watch('accName')}
-						// getOptionLabel={(option) => option.name}
 						onChange={handleSelectAccount}
 						renderInput={(params) => (
 							<TextField
@@ -170,18 +211,6 @@ export default function CheckCreateComponent() {
 
 					<Controller
 						control={control}
-						name="accNumber"
-						render={({ field }) => (
-							<TextField
-								error={!!errors.accNumber?.message}
-								helperText={errors.accNumber?.message}
-								{...field}
-								label="Conta"
-							/>
-						)}
-					/>
-					<Controller
-						control={control}
 						name="agencyNumber"
 						render={({ field }) => (
 							<TextField
@@ -192,6 +221,33 @@ export default function CheckCreateComponent() {
 							/>
 						)}
 					/>
+
+					<Controller
+						control={control}
+						name="accNumber"
+						render={({ field }) => (
+							<TextField
+								error={!!errors.accNumber?.message}
+								helperText={errors.accNumber?.message}
+								{...field}
+								label="Conta"
+							/>
+						)}
+					/>
+
+					<Controller
+						control={control}
+						name="cpfOrCnpj"
+						render={({ field }) => (
+							<TextField
+								error={!!errors.cpfOrCnpj?.message}
+								helperText={errors.cpfOrCnpj?.message}
+								{...field}
+								label="CPF ou CNPJ"
+							/>
+						)}
+					/>
+
 					<Controller
 						control={control}
 						name="checkNumber"
@@ -205,18 +261,25 @@ export default function CheckCreateComponent() {
 						)}
 					/>
 
-					<Controller
-						control={control}
-						name="payerName"
-						render={({ field }) => (
+					<Autocomplete
+						disablePortal
+						id="combo-box-demo"
+						noOptionsText="Adicione uma nova conta"
+						options={optionsPayerName}
+						sx={{ width: 250 }}
+						value={watch('payerName')}
+						onChange={handleSelectPayerName}
+						renderInput={(params) => (
 							<TextField
+								{...params}
+								onChange={handleFindAPayerName}
 								error={!!errors.payerName?.message}
 								helperText={errors.payerName?.message}
-								{...field}
 								label="Pagador"
 							/>
 						)}
 					/>
+
 					<Controller
 						control={control}
 						name="payerPhone"
