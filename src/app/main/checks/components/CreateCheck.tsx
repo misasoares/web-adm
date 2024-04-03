@@ -43,7 +43,7 @@ export default function CheckCreateComponent() {
 	});
 
 	async function findAcc(params: string) {
-		const isThereAcc = await axios.get<IAccountBank[]>(`https://api-rapidoms-v3.onrender.com/api/checks/${params}`);
+		const isThereAcc = await axios.get<IAccountBank[]>(`${import.meta.env.VITE_API_KEY}/checks/${params}`);
 
 		const { data } = isThereAcc;
 
