@@ -25,6 +25,13 @@ const navigationConfig: FuseNavItemType[] = [
 				type: 'item',
 				icon: 'heroicons-outline:cash',
 				url: '/checks'
+			},
+			{
+				id: 'apps.internalOrder',
+				title: 'Pedido',
+				type: 'item',
+				icon: 'heroicons-outline:clipboard-list',
+				url: '/internal-order'
 			}
 		]
 	}

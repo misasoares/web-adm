@@ -14,6 +14,7 @@ import SignInConfig from '../main/sign-in/SignInConfig';
 import SignOutConfig from '../main/sign-out/SignOutConfig';
 import SignUpConfig from '../main/sign-up/SignUpConfig';
 import UserInterfaceConfigs from '../main/user-interface/UserInterfaceConfigs';
+import InternalOrderConfig from '../main/internalOrder/InternalOrderConfig';
 
 const routeConfigs: FuseRouteConfigsType = [
 	SignOutConfig,
@@ -21,6 +22,7 @@ const routeConfigs: FuseRouteConfigsType = [
 	SignUpConfig,
 	DocumentationConfig,
 	ChecksConfig,
+	InternalOrderConfig,
 	...PagesConfigs,
 	...UserInterfaceConfigs,
 	...DashboardsConfigs,
