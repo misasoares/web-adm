@@ -10,6 +10,11 @@ export const addChecks = createAsyncThunk('checks/addChecks', async (data: Schem
 	return res.data;
 });
 
+export const updateCheck = createAsyncThunk('checks/updateCheck', async (data: SchemaCheckType) => {
+	const res = await axios.put<ChecksType>(`${import.meta.env.VITE_API_KEY}/checks/${data.uid}`, data);
+	return res.data;
+});
+
 export const getChecks = createAsyncThunk('checks/getChecks', async () => {
 	const res = await axios.get<ChecksType[]>(`${import.meta.env.VITE_API_KEY}/checks`);
 
@@ -35,6 +40,18 @@ export const checksSlice = createSlice({
 
 				if (action.payload) {
 					state.checks.push(action.payload);
+				}
+			})
+			.addCase(updateCheck.pending, (state) => {
+				state.loading = true;
+			})
+			.addCase(updateCheck.fulfilled, (state, action) => {
+				state.loading = false;
+				if (action.payload) {
+					const findIndex = state.checks.findIndex((check) => check.uid === action.payload.uid);
+					if (findIndex !== -1) {
+						state.checks[findIndex] = action.payload;
+					}
 				}
 			})
 			.addCase(getChecks.pending, (state) => {

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const schemaZod = z.object({
+	uid: z.string().optional(),
 	accName: z.string().min(2, 'É necessário adicionar o nome da conta.'),
 	bank: z.string().min(2, 'É necessário adicionar o banco.'),
 	accNumber: z.string().min(2, 'É necessário adicionar o número de conta.'),

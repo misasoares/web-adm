@@ -7,9 +7,10 @@ import axios from 'axios';
 import { ptBR } from 'date-fns/locale';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { addChecks } from '../store/checksSlice';
+import { addChecks, updateCheck } from '../store/checksSlice';
 
 import { IAccountBank, IPayerName, SchemaCheckType, schemaZod } from '../types/ChecksFormTypes';
+import { ChecksType } from '../store/types/typesSlice';
 
 const defaultValues = {
 	accName: '',
@@ -24,7 +25,13 @@ const defaultValues = {
 	value: ''
 };
 
-export default function CheckCreateComponent() {
+interface CreateChecksProps {
+	rowToEdit: ChecksType;
+	editMode: boolean;
+	setEditMode: (arg: boolean) => void;
+}
+
+export default function CheckCreateComponent({ rowToEdit, editMode, setEditMode }: CreateChecksProps) {
 	const dispatch = useAppDispatch();
 	const [accNameValue, setAccNameValue] = useState('');
 	const [accOptions, setAccOptions] = useState<string[]>([]);
@@ -43,6 +50,23 @@ export default function CheckCreateComponent() {
 		defaultValues,
 		resolver: zodResolver(schemaZod)
 	});
+
+	useEffect(() => {
+		if (editMode && rowToEdit) {
+			const valuesFormated = {
+				...rowToEdit,
+				dueDate: new Date(rowToEdit.dueDate),
+				accName: rowToEdit.AccountBank.name,
+				bank: rowToEdit.Bank.name,
+				accNumber: rowToEdit.Bank.accNumber,
+				agencyNumber: rowToEdit.Bank.agencyNumber,
+				cpfOrCnpj: rowToEdit.Bank.cpfOrCnpj,
+				uid: rowToEdit.uid
+			};
+
+			reset(valuesFormated);
+		}
+	}, [rowToEdit, editMode]);
 
 	async function findAcc(params: string) {
 		const isThereAcc = await axios.get<IAccountBank[]>(`${import.meta.env.VITE_API_KEY}/checks/${params}`);
@@ -99,11 +123,19 @@ export default function CheckCreateComponent() {
 	}
 
 	function onSubmit(data: SchemaCheckType) {
-		dispatch(addChecks(data));
+		if (editMode) {
+			dispatch(updateCheck(data));
+			handleCancelSubmit();
+		} else {
+			dispatch(addChecks(data));
+		}
 	}
 
 	function handleCancelSubmit() {
-		reset();
+		reset(defaultValues);
+		if (editMode) {
+			setEditMode(false);
+		}
 	}
 
 	useEffect(() => {
@@ -354,7 +386,7 @@ export default function CheckCreateComponent() {
 						color="primary"
 						type="submit"
 					>
-						Enviar
+						{editMode ? 'Editar' : 'Enviar'}
 					</Button>
 					<Button
 						variant="outlined"
