@@ -6,12 +6,12 @@ export const createOrderSchema = z.object({
 	costumer: z.string(),
 	phone: z.string(),
 	address: z.string(),
-	vehicle: z.string(),
+	vehicles: z.string(),
 	products: z.array(
 		z.object({
 			quantity: z.string(),
 			description: z.string(),
-			unitValue: z.string(),
+			unityValue: z.string(),
 			total: z.string()
 		})
 	)
@@ -33,6 +33,6 @@ export const defaultValues: TCreateOrderSchema = {
 	costumer: '',
 	phone: '',
 	address: '',
-	vehicle: '',
-	products: [{ quantity: '', description: '', unitValue: '', total: '' }]
+	vehicles: '',
+	products: [{ quantity: '', description: '', unityValue: '', total: '' }]
 };

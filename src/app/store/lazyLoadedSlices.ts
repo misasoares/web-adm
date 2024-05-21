@@ -1,10 +1,10 @@
-import { combineSlices } from '@reduxjs/toolkit';
 import { fuseSettingsSlice } from '@fuse/core/FuseSettings/fuseSettingsSlice';
+import { combineSlices } from '@reduxjs/toolkit';
 import { i18nSlice } from 'app/store/i18nSlice';
-import apiService from './apiService';
 import { userSlice } from '../auth/user/store/userSlice';
 import { checksSlice } from '../main/checks/store/checksSlice';
-
+import { internalOrderSlice } from '../main/internalOrder/store/internalOrderSlice';
+import apiService from './apiService';
 // eslint-disable-next-line
 // @ts-ignore
 export interface LazyLoadedSlices {}
@@ -17,8 +17,10 @@ export const rootReducer = combineSlices(
 	 */
 	userSlice,
 	checksSlice,
+	internalOrderSlice,
 	fuseSettingsSlice,
 	i18nSlice,
+
 	/**
 	 * Dynamic slices
 	 */

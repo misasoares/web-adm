@@ -77,7 +77,7 @@ export default function BasicTable({ control, append, fields }: PropsTable) {
 
 							<TableCell align="right">
 								<Controller
-									name={`products.${index}.unitValue`}
+									name={`products.${index}.unityValue`}
 									control={control}
 									render={({ field }) => (
 										<TextField
@@ -109,7 +109,7 @@ export default function BasicTable({ control, append, fields }: PropsTable) {
 				</TableBody>
 			</Table>
 			<div className="w-full flex justify-end mb-10">
-				<Button onClick={() => append({ quantity: '', description: '', unitValue: '', total: '' })}>
+				<Button onClick={() => append({ quantity: '', description: '', unityValue: '', total: '' })}>
 					<FuseSvgIcon>heroicons-outline:plus-circle</FuseSvgIcon>
 				</Button>
 			</div>

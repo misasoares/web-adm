@@ -1,20 +1,31 @@
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Checkbox, Divider, FormControlLabel, FormGroup, TextField, Typography } from '@mui/material';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { ChangeEvent, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import logoMsContained from '../../../../public/assets/images/logo/logo-ms-default.png';
 import BasicTable from './components/Table';
 import { createOrderSchema, defaultValues } from './formSchema';
+import { createInternalOrder, selectInternalOrder } from './store/internalOrderSlice';
 
 export default function OrderPage() {
+	const dispatch = useAppDispatch();
+	const internalOrders = useAppSelector(selectInternalOrder);
 	const [typeOrder, setTypeOrder] = useState({
 		order: true,
 		receipt: false,
 		budget: false
 	});
 
-	const { setValue, control, register, watch, handleSubmit } = useForm({
+	const {
+		setValue,
+		control,
+		register,
+		watch,
+		handleSubmit,
+		formState: { errors }
+	} = useForm({
 		mode: 'onChange',
 		defaultValues,
 		resolver: zodResolver(createOrderSchema)
@@ -59,7 +70,7 @@ export default function OrderPage() {
 	};
 
 	function submitForm(data) {
-		console.log(data);
+		dispatch(createInternalOrder(data));
 	}
 
 	return (
@@ -141,7 +152,7 @@ export default function OrderPage() {
 					<div className="flex flex-row items-center gap-10">
 						<Typography>Veículo:</Typography>
 						<TextField
-							{...register('vehicle')}
+							{...register('vehicles')}
 							fullWidth
 							variant="standard"
 						/>

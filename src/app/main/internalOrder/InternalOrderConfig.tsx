@@ -1,6 +1,7 @@
 import { FuseRouteConfigType } from '@fuse/utils/FuseUtils';
 import { authRoles } from 'src/app/auth';
 import InternalOrderPage from './InternalOrder';
+import InternalOrderList from './InternalOrderList';
 
 const InternalOrderConfig: FuseRouteConfigType = {
 	settings: {
@@ -29,6 +30,10 @@ const InternalOrderConfig: FuseRouteConfigType = {
 		{
 			path: 'internal-order',
 			element: <InternalOrderPage />
+		},
+		{
+			path: 'internal-order/list',
+			element: <InternalOrderList />
 		}
 	]
 };
