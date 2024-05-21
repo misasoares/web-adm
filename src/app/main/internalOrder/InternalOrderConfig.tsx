@@ -1,5 +1,5 @@
 import { FuseRouteConfigType } from '@fuse/utils/FuseUtils';
-import authRoles from '../../auth/authRoles';
+import { authRoles } from 'src/app/auth';
 import InternalOrderPage from './InternalOrder';
 
 const InternalOrderConfig: FuseRouteConfigType = {

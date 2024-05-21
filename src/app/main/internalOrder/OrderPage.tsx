@@ -1,35 +1,173 @@
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
-import { Button, TextField } from '@mui/material';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button, Checkbox, Divider, FormControlLabel, FormGroup, TextField, Typography } from '@mui/material';
+import { ChangeEvent, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import logoMsContained from '../../../../public/assets/images/logo/logo-ms-default.png';
+import BasicTable from './components/Table';
+import { createOrderSchema, defaultValues } from './formSchema';
 
 export default function OrderPage() {
+	const [typeOrder, setTypeOrder] = useState({
+		order: true,
+		receipt: false,
+		budget: false
+	});
+
+	const { setValue, control, register, watch, handleSubmit } = useForm({
+		mode: 'onChange',
+		defaultValues,
+		resolver: zodResolver(createOrderSchema)
+	});
+
+	const { fields, append } = useFieldArray({
+		control,
+		name: 'products'
+	});
+
+	const today = new Date();
+
+	const getMonthName = (monthIndex: number) => {
+		const months = [
+			'janeiro',
+			'fevereiro',
+			'março',
+			'abril',
+			'maio',
+			'junho',
+			'julho',
+			'agosto',
+			'setembro',
+			'outubro',
+			'novembro',
+			'dezembro'
+		];
+		return months[monthIndex];
+	};
+
+	const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
+		const { name } = event.target;
+
+		setTypeOrder({
+			order: false,
+			receipt: false,
+			budget: false,
+			[name]: true
+		});
+
+		setValue('type', name);
+	};
+
+	function submitForm(data) {
+		console.log(data);
+	}
+
 	return (
-		<>
-			<div className="flex justify-center items-center flex-wrap gap-20">
-				<TextField label="Cliente" />
-				<TextField label="Veículo" />
-				<TextField label="Telefone" />
-				<TextField label="Cidade" />
-				<TextField label="Bairro" />
-				<TextField label="Rua" />
-				<TextField label="Nº da casa" />
-				<TextField label="CPF ou CNPJ" />
-				<TextField label="Produto" />
+		<div className="flex flex-col items-center">
+			<form
+				className="border-black border-1 flex-col p-24"
+				onSubmit={handleSubmit(submitForm)}
+			>
+				<div className="flex flex-row gap-84 justify-between">
+					<div className="flex flex-col justify-center items-center ">
+						<img
+							src={logoMsContained}
+							alt="Logo MS Baterias com fundo azul"
+							className="w-216"
+						/>
+						<Typography fontWeight={700}>Claudio Bueno Soares - ME</Typography>
+						<Typography fontWeight={600}>CNPJ: 94.452.968/0001-00</Typography>
+						<Typography fontWeight={600}>I.E. 241/0025425</Typography>
+					</div>
+					<div className="flex flex-col justify-center items-center">
+						<Typography fontWeight={900}>Tele Entrega</Typography>
+						<Typography fontWeight={700}>Fone: (51) 3543.1818</Typography>
+						<Typography fontWeight={700}>msbaterias@bol.com.br</Typography>
+						<Typography fontWeight={500}>Rua Arthur Lehnen, 57,</Typography>
+						<Typography fontWeight={500}>Centro - Parobé/RS</Typography>
+					</div>
+				</div>
+				<div className="flex mt-20 justify-center">
+					<FormGroup className="flex flex-row gap-24">
+						<FormControlLabel
+							control={<Checkbox checked={typeOrder.receipt} />}
+							label="Recibo"
+							name="receipt"
+							onChange={handleCheckboxChange}
+						/>
+						<FormControlLabel
+							control={<Checkbox checked={typeOrder.budget} />}
+							label="Orçamento"
+							name="budget"
+							onChange={handleCheckboxChange}
+						/>
+						<FormControlLabel
+							control={<Checkbox checked={typeOrder.order} />}
+							label="Pedido"
+							onChange={handleCheckboxChange}
+							name="order"
+						/>
+					</FormGroup>
+				</div>
+				<Divider className="b-10" />
+				<div className="flex w-full justify-end mt-10">
+					<Typography>
+						Parobé, {today.getDate()} de {getMonthName(today.getMonth())}, de {today.getFullYear()}
+					</Typography>
+				</div>
+				<div className="flex flex-col gap-10">
+					<div className="flex flex-row items-center gap-10">
+						<Typography>Cliente:</Typography>
+						<TextField
+							{...register('costumer')}
+							fullWidth
+							variant="standard"
+						/>
+						<Typography>Telefone:</Typography>
+						<TextField
+							{...register('phone')}
+							fullWidth
+							variant="standard"
+						/>
+					</div>
+					<div className="flex flex-row items-center gap-10">
+						<Typography>Endereço:</Typography>
+						<TextField
+							{...register('address')}
+							fullWidth
+							variant="standard"
+						/>
+					</div>
+					<div className="flex flex-row items-center gap-10">
+						<Typography>Veículo:</Typography>
+						<TextField
+							{...register('vehicle')}
+							fullWidth
+							variant="standard"
+						/>
+					</div>
+				</div>
+				<Typography>TO DO - estilizar table cell para diminuit o espaço de altura entre eles</Typography>
+				<div className="mt-32">
+					<BasicTable
+						control={control}
+						fields={fields}
+						append={append}
+					/>
+				</div>
+
+				<div className="flex w-full justify-end mt-10">
+					<Typography>Valor total do - type of order- : R$489,00</Typography>
+				</div>
 				<Button
-					variant="outlined"
-					color="primary"
-				>
-					CANCELAR
-				</Button>
-				<Button
+					type="submit"
 					variant="contained"
 					color="primary"
 				>
-					ENVIAR
+					Enviar
 				</Button>
-				<Button startIcon={<FuseSvgIcon>heroicons-outline:printer</FuseSvgIcon>}>IMPRIMIR </Button>
-			</div>
-
-			<div>aqui vai a visualização</div>
-		</>
+			</form>
+			<Button startIcon={<FuseSvgIcon>heroicons-outline:printer</FuseSvgIcon>}>IMPRIMIR </Button>
+		</div>
 	);
 }
