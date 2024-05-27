@@ -7,6 +7,7 @@ export const createOrderSchema = z.object({
 	phone: z.string(),
 	address: z.string(),
 	vehicles: z.string(),
+	cpf: z.string(),
 	products: z.array(
 		z.object({
 			quantity: z.string(),

@@ -2,7 +2,7 @@ import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Checkbox, Divider, FormControlLabel, FormGroup, TextField, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import logoMsContained from '../../../../public/assets/images/logo/logo-ms-default.png';
 import BasicTable from './components/Table';
@@ -17,6 +17,8 @@ export default function OrderPage() {
 		receipt: false,
 		budget: false
 	});
+
+	const [totalValueOrder, setTotalValueOrder] = useState(0);
 
 	const {
 		setValue,
@@ -72,6 +74,41 @@ export default function OrderPage() {
 	function submitForm(data) {
 		dispatch(createInternalOrder(data));
 	}
+
+	// useEffect(() => {
+	// 	const subscription = watch((value) => {
+	// 		if (Array.isArray(value.products)) {
+	// 			const products = value.products.map((product) => ({
+	// 				...product,
+	// 				total:
+	// 					product.quantity && product.unityValue
+	// 						? (parseFloat(product.quantity) * parseFloat(product.unityValue)).toFixed(2)
+	// 						: ''
+	// 			}));
+
+	// 			setValue('products', products);
+	// 			const totalValue = watch('products').reduce(
+	// 				(sum, product) => sum + (parseFloat(product.total) || 0),
+	// 				0
+	// 			);
+	// 			setTotalValueOrder(totalValue);
+	// 		}
+	// 	});
+
+	// 	return () => subscription.unsubscribe();
+	// }, [watch]);
+
+	useEffect(() => {
+		const subscription = watch((value) => {
+			const products = value.products.map((product) => ({
+				...product,
+				total: `${Number(product.quantity) * Number(product.unityValue)}`
+			}));
+			setValue('products', products);
+		});
+
+		return () => subscription.unsubscribe();
+	}, [watch]);
 
 	return (
 		<div className="flex flex-col items-center">
@@ -134,9 +171,9 @@ export default function OrderPage() {
 							fullWidth
 							variant="standard"
 						/>
-						<Typography>Telefone:</Typography>
+						<Typography>CPF:</Typography>
 						<TextField
-							{...register('phone')}
+							{...register('cpf')}
 							fullWidth
 							variant="standard"
 						/>
@@ -145,6 +182,12 @@ export default function OrderPage() {
 						<Typography>Endereço:</Typography>
 						<TextField
 							{...register('address')}
+							fullWidth
+							variant="standard"
+						/>
+						<Typography>Telefone:</Typography>
+						<TextField
+							{...register('phone')}
 							fullWidth
 							variant="standard"
 						/>
@@ -158,7 +201,7 @@ export default function OrderPage() {
 						/>
 					</div>
 				</div>
-				<Typography>TO DO - estilizar table cell para diminuit o espaço de altura entre eles</Typography>
+
 				<div className="mt-32">
 					<BasicTable
 						control={control}
@@ -168,7 +211,7 @@ export default function OrderPage() {
 				</div>
 
 				<div className="flex w-full justify-end mt-10">
-					<Typography>Valor total do - type of order- : R$489,00</Typography>
+					<Typography>Valor total: R${totalValueOrder}</Typography>
 				</div>
 				<Button
 					type="submit"

@@ -26,7 +26,7 @@ export default function BasicTable({ control, append, fields }: PropsTable) {
 			elevation={4}
 		>
 			<Table
-				sx={{ minWidth: 650, minHeight: 250 }}
+				sx={{ minWidth: 650 }}
 				aria-label="simple table"
 			>
 				<TableHead>
@@ -41,6 +41,7 @@ export default function BasicTable({ control, append, fields }: PropsTable) {
 					{fields.map((field, index) => (
 						<TableRow
 							key={field.id}
+							className="h-10"
 							sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 						>
 							<TableCell
