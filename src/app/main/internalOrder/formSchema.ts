@@ -3,11 +3,11 @@ import { z } from 'zod';
 export const createOrderSchema = z.object({
 	type: z.string(),
 	date: z.string(),
-	costumer: z.string(),
+	costumerName: z.string(),
 	phone: z.string(),
 	address: z.string(),
 	vehicles: z.string(),
-	cpf: z.string(),
+	cpfOrCnpj: z.string(),
 	products: z.array(
 		z.object({
 			quantity: z.string(),
@@ -15,7 +15,9 @@ export const createOrderSchema = z.object({
 			unityValue: z.string(),
 			total: z.string()
 		})
-	)
+	),
+	observations: z.string().optional(),
+	totalValue: z.number().optional()
 });
 
 export type TCreateOrderSchema = z.infer<typeof createOrderSchema>;
@@ -31,7 +33,7 @@ function getDateToday() {
 export const defaultValues: TCreateOrderSchema = {
 	type: 'order',
 	date: getDateToday(),
-	costumer: '',
+	costumerName: '',
 	phone: '',
 	address: '',
 	vehicles: '',

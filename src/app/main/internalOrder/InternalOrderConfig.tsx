@@ -28,11 +28,11 @@ const InternalOrderConfig: FuseRouteConfigType = {
 	auth: authRoles.onlyGuest,
 	routes: [
 		{
-			path: 'internal-order',
+			path: 'internal-order/:uid',
 			element: <InternalOrderPage />
 		},
 		{
-			path: 'internal-order/list',
+			path: 'internal-order',
 			element: <InternalOrderList />
 		}
 	]

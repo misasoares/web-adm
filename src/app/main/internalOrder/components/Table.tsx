@@ -8,8 +8,10 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	TextField
+	TextField,
+	InputAdornment
 } from '@mui/material';
+
 import { Control, Controller, FieldArrayWithId, UseFieldArrayAppend } from 'react-hook-form';
 import { TCreateOrderSchema } from '../formSchema';
 
@@ -17,9 +19,10 @@ interface PropsTable {
 	control: Control<TCreateOrderSchema>;
 	append: UseFieldArrayAppend<TCreateOrderSchema>;
 	fields: FieldArrayWithId<TCreateOrderSchema, 'products', 'id'>[];
+	handleRemoveProduct: (index: number) => void;
 }
 
-export default function BasicTable({ control, append, fields }: PropsTable) {
+export default function BasicTable({ control, append, fields, handleRemoveProduct }: PropsTable) {
 	return (
 		<TableContainer
 			component={Paper}
@@ -82,10 +85,13 @@ export default function BasicTable({ control, append, fields }: PropsTable) {
 									control={control}
 									render={({ field }) => (
 										<TextField
-											className="w-68"
+											className="w-84"
 											variant="standard"
 											type="number"
 											{...field}
+											InputProps={{
+												startAdornment: <InputAdornment position="start">R$</InputAdornment>
+											}}
 										/>
 									)}
 								/>
@@ -97,13 +103,25 @@ export default function BasicTable({ control, append, fields }: PropsTable) {
 									control={control}
 									render={({ field }) => (
 										<TextField
-											className="w-68"
+											className="w-112"
 											variant="standard"
 											type="number"
 											{...field}
+											InputProps={{
+												startAdornment: <InputAdornment position="start">R$</InputAdornment>
+											}}
 										/>
 									)}
 								/>
+							</TableCell>
+							<TableCell>
+								<FuseSvgIcon
+									className="cursor-pointer"
+									color="action"
+									onClick={() => handleRemoveProduct(index)}
+								>
+									heroicons-outline:trash
+								</FuseSvgIcon>
 							</TableCell>
 						</TableRow>
 					))}

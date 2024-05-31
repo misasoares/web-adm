@@ -4,13 +4,16 @@ import { Button, Checkbox, Divider, FormControlLabel, FormGroup, TextField, Typo
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router';
 import logoMsContained from '../../../../public/assets/images/logo/logo-ms-default.png';
+import CostumerInfo from './components/CostumerInfo';
 import BasicTable from './components/Table';
-import { createOrderSchema, defaultValues } from './formSchema';
+import { TCreateOrderSchema, createOrderSchema, defaultValues } from './formSchema';
 import { createInternalOrder, selectInternalOrder } from './store/internalOrderSlice';
 
 export default function OrderPage() {
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 	const internalOrders = useAppSelector(selectInternalOrder);
 	const [typeOrder, setTypeOrder] = useState({
 		order: true,
@@ -27,13 +30,13 @@ export default function OrderPage() {
 		watch,
 		handleSubmit,
 		formState: { errors }
-	} = useForm({
+	} = useForm<TCreateOrderSchema>({
 		mode: 'onChange',
 		defaultValues,
 		resolver: zodResolver(createOrderSchema)
 	});
 
-	const { fields, append } = useFieldArray({
+	const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'products'
 	});
@@ -71,40 +74,28 @@ export default function OrderPage() {
 		setValue('type', name);
 	};
 
-	function submitForm(data) {
-		dispatch(createInternalOrder(data));
+	function handleRemoveProduct(index: number) {
+		remove(index);
 	}
 
-	// useEffect(() => {
-	// 	const subscription = watch((value) => {
-	// 		if (Array.isArray(value.products)) {
-	// 			const products = value.products.map((product) => ({
-	// 				...product,
-	// 				total:
-	// 					product.quantity && product.unityValue
-	// 						? (parseFloat(product.quantity) * parseFloat(product.unityValue)).toFixed(2)
-	// 						: ''
-	// 			}));
+	function handleCancelOrder() {
+		navigate('/internal-order');
+	}
 
-	// 			setValue('products', products);
-	// 			const totalValue = watch('products').reduce(
-	// 				(sum, product) => sum + (parseFloat(product.total) || 0),
-	// 				0
-	// 			);
-	// 			setTotalValueOrder(totalValue);
-	// 		}
-	// 	});
-
-	// 	return () => subscription.unsubscribe();
-	// }, [watch]);
+	function submitForm(data: TCreateOrderSchema) {
+		dispatch(createInternalOrder({ ...data, totalValue: totalValueOrder }));
+	}
 
 	useEffect(() => {
+		let totalOfOrder = 0;
+
 		const subscription = watch((value) => {
-			const products = value.products.map((product) => ({
-				...product,
-				total: `${Number(product.quantity) * Number(product.unityValue)}`
-			}));
-			setValue('products', products);
+			totalOfOrder = value.products.reduce((acc, product) => {
+				const totalByProduct = +product.quantity * +product.unityValue;
+				return acc + totalByProduct;
+			}, 0);
+
+			setTotalValueOrder(totalOfOrder);
 		});
 
 		return () => subscription.unsubscribe();
@@ -163,63 +154,48 @@ export default function OrderPage() {
 						Parobé, {today.getDate()} de {getMonthName(today.getMonth())}, de {today.getFullYear()}
 					</Typography>
 				</div>
-				<div className="flex flex-col gap-10">
-					<div className="flex flex-row items-center gap-10">
-						<Typography>Cliente:</Typography>
-						<TextField
-							{...register('costumer')}
-							fullWidth
-							variant="standard"
-						/>
-						<Typography>CPF:</Typography>
-						<TextField
-							{...register('cpf')}
-							fullWidth
-							variant="standard"
-						/>
-					</div>
-					<div className="flex flex-row items-center gap-10">
-						<Typography>Endereço:</Typography>
-						<TextField
-							{...register('address')}
-							fullWidth
-							variant="standard"
-						/>
-						<Typography>Telefone:</Typography>
-						<TextField
-							{...register('phone')}
-							fullWidth
-							variant="standard"
-						/>
-					</div>
-					<div className="flex flex-row items-center gap-10">
-						<Typography>Veículo:</Typography>
-						<TextField
-							{...register('vehicles')}
-							fullWidth
-							variant="standard"
-						/>
-					</div>
-				</div>
+
+				<CostumerInfo register={register} />
 
 				<div className="mt-32">
 					<BasicTable
 						control={control}
 						fields={fields}
 						append={append}
+						handleRemoveProduct={handleRemoveProduct}
 					/>
 				</div>
 
 				<div className="flex w-full justify-end mt-10">
 					<Typography>Valor total: R${totalValueOrder}</Typography>
 				</div>
-				<Button
-					type="submit"
-					variant="contained"
-					color="primary"
-				>
-					Enviar
-				</Button>
+
+				<div className="flex w-full m-10">
+					<TextField
+						label="Observações"
+						fullWidth
+						multiline
+						rows={4}
+						{...register('observations')}
+					/>
+				</div>
+				<div className="flex gap-10">
+					<Button
+						type="submit"
+						variant="outlined"
+						color="primary"
+						onClick={handleCancelOrder}
+					>
+						Cancelar
+					</Button>
+					<Button
+						type="submit"
+						variant="contained"
+						color="primary"
+					>
+						Enviar
+					</Button>
+				</div>
 			</form>
 			<Button startIcon={<FuseSvgIcon>heroicons-outline:printer</FuseSvgIcon>}>IMPRIMIR </Button>
 		</div>

@@ -1,21 +1,17 @@
-import * as React from 'react';
+import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
+import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import { useAppSelector } from 'app/store/hooks';
 import { selectInternalOrder } from '../store/internalOrderSlice';
 
-function createData(name: string, calories: number, fat: number, carbs: number, protein: number) {
-	return { name, calories, fat, carbs, protein };
-}
-
 export default function TableToList() {
 	const internalOrder = useAppSelector(selectInternalOrder);
-	console.log(internalOrder);
+
 	return (
 		<TableContainer component={Paper}>
 			<Table
@@ -26,7 +22,9 @@ export default function TableToList() {
 					<TableRow>
 						<TableCell>Cliente</TableCell>
 						<TableCell align="right">Tipo</TableCell>
+						<TableCell align="right">Status</TableCell>
 						<TableCell align="right">Valor total</TableCell>
+						<TableCell align="right">Ações</TableCell>
 					</TableRow>
 				</TableHead>
 				<TableBody>
@@ -39,10 +37,14 @@ export default function TableToList() {
 								component="th"
 								scope="row"
 							>
-								{row.costumer}
+								{row.costumer.name}
 							</TableCell>
 							<TableCell align="right">{row.type}</TableCell>
+							<TableCell align="right">aqui vai o status</TableCell>
 							<TableCell align="right">{row.totalValue}</TableCell>
+							<TableCell className="flex justify-end">
+								<FuseSvgIcon color="action">heroicons-outline:pencil</FuseSvgIcon>
+							</TableCell>
 						</TableRow>
 					))}
 				</TableBody>

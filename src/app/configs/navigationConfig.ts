@@ -28,7 +28,7 @@ const navigationConfig: FuseNavItemType[] = [
 			},
 			{
 				id: 'apps.internalOrder',
-				title: 'Pedido',
+				title: 'Pedidos',
 				type: 'item',
 				icon: 'heroicons-outline:clipboard-list',
 				url: '/internal-order'
