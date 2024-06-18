@@ -1,13 +1,24 @@
 import { z } from 'zod';
 
+export enum EInternalOrderStatus {
+	IN_PROGRESS = 'IN_PROGRESS',
+	CONCLUDED = 'CONCLUDED'
+}
+export enum EInternalOrderType {
+	BUDGET = 'BUDGET',
+	ORDER = 'ORDER',
+	RECEIPT = 'RECEIPT'
+}
+
 export const createOrderSchema = z.object({
-	type: z.string(),
+	type: z.nativeEnum(EInternalOrderType),
 	date: z.string(),
 	costumerName: z.string(),
 	phone: z.string(),
 	address: z.string(),
 	vehicles: z.string(),
 	cpfOrCnpj: z.string(),
+	status: z.nativeEnum(EInternalOrderStatus).optional(),
 	products: z.array(
 		z.object({
 			quantity: z.string(),
@@ -31,7 +42,7 @@ function getDateToday() {
 }
 
 export const defaultValues: TCreateOrderSchema = {
-	type: 'order',
+	type: EInternalOrderType.ORDER,
 	date: getDateToday(),
 	costumerName: '',
 	phone: '',

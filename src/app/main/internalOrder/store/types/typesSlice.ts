@@ -19,7 +19,7 @@ export interface InternalOrderType {
 	uid: string;
 	type: string;
 	costumer: ICostumer;
-
+	status: string;
 	vehicles: string;
 	totalValue: number;
 	products: ProductsOrderType[];

@@ -9,7 +9,13 @@ import { useNavigate } from 'react-router';
 import logoMsContained from '../../../../public/assets/images/logo/logo-ms-default.png';
 import CostumerInfo from './components/CostumerInfo';
 import BasicTable from './components/Table';
-import { TCreateOrderSchema, createOrderSchema, defaultValues } from './formSchema';
+import {
+	TCreateOrderSchema,
+	createOrderSchema,
+	defaultValues,
+	EInternalOrderType,
+	EInternalOrderStatus
+} from './formSchema';
 import { createInternalOrder, selectInternalOrder } from './store/internalOrderSlice';
 
 export default function OrderPage() {
@@ -64,15 +70,15 @@ export default function OrderPage() {
 
 	const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { name } = event.target;
+		const orderType = name as EInternalOrderType;
 
 		setTypeOrder({
-			order: false,
-			receipt: false,
-			budget: false,
-			[name]: true
+			order: orderType === EInternalOrderType.ORDER,
+			receipt: orderType === EInternalOrderType.RECEIPT,
+			budget: orderType === EInternalOrderType.BUDGET
 		});
 
-		setValue('type', name);
+		setValue('type', orderType);
 	};
 
 	function handleRemoveProduct(index: number) {
@@ -84,7 +90,15 @@ export default function OrderPage() {
 	}
 
 	function submitForm(data: TCreateOrderSchema) {
-		dispatch(createInternalOrder({ ...data, totalValue: totalValueOrder }));
+		let submitData = data;
+
+		if (data.type !== EInternalOrderType.ORDER) {
+			submitData = { ...data, status: EInternalOrderStatus.CONCLUDED };
+		} else {
+			submitData = { ...data, status: EInternalOrderStatus.IN_PROGRESS };
+		}
+
+		dispatch(createInternalOrder({ ...submitData, totalValue: totalValueOrder }));
 		dispatch(showMessage({ message: 'Pedido feito com sucesso.', variant: 'success' }));
 		navigate('/internal-order');
 	}
@@ -134,20 +148,20 @@ export default function OrderPage() {
 						<FormControlLabel
 							control={<Checkbox checked={typeOrder.receipt} />}
 							label="Recibo"
-							name="receipt"
+							name={EInternalOrderType.RECEIPT}
 							onChange={handleCheckboxChange}
 						/>
 						<FormControlLabel
 							control={<Checkbox checked={typeOrder.budget} />}
 							label="Orçamento"
-							name="budget"
+							name={EInternalOrderType.BUDGET}
 							onChange={handleCheckboxChange}
 						/>
 						<FormControlLabel
 							control={<Checkbox checked={typeOrder.order} />}
 							label="Pedido"
+							name={EInternalOrderType.ORDER}
 							onChange={handleCheckboxChange}
-							name="order"
 						/>
 					</FormGroup>
 				</div>
