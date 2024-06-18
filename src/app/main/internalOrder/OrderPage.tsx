@@ -1,3 +1,4 @@
+import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Checkbox, Divider, FormControlLabel, FormGroup, TextField, Typography } from '@mui/material';
@@ -84,6 +85,8 @@ export default function OrderPage() {
 
 	function submitForm(data: TCreateOrderSchema) {
 		dispatch(createInternalOrder({ ...data, totalValue: totalValueOrder }));
+		dispatch(showMessage({ message: 'Pedido feito com sucesso.', variant: 'success' }));
+		navigate('/internal-order');
 	}
 
 	useEffect(() => {
@@ -193,11 +196,11 @@ export default function OrderPage() {
 						variant="contained"
 						color="primary"
 					>
-						Enviar
+						Salvar
 					</Button>
+					<Button startIcon={<FuseSvgIcon>heroicons-outline:printer</FuseSvgIcon>}>IMPRIMIR </Button>
 				</div>
 			</form>
-			<Button startIcon={<FuseSvgIcon>heroicons-outline:printer</FuseSvgIcon>}>IMPRIMIR </Button>
 		</div>
 	);
 }
