@@ -5,6 +5,7 @@ export default function InternalOrderPage() {
 	return (
 		<DefaultPage
 			title="Criar pedido"
+			isCreatePage
 			content={<OrderPage />}
 		/>
 	);

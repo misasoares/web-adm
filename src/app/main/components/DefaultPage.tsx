@@ -4,16 +4,31 @@ import { useNavigate } from 'react-router';
 
 interface DefaultPageProps {
 	title: string;
+	isCreatePage?: boolean;
 	createButton?: string;
 	content: JSX.Element;
 	secondaryContent?: JSX.Element;
 }
 
-export default function DefaultPage({ title, content, secondaryContent, createButton }: DefaultPageProps) {
+export default function DefaultPage({
+	title,
+	content,
+	secondaryContent,
+	createButton,
+	isCreatePage
+}: DefaultPageProps) {
 	const navigate = useNavigate();
 
 	return (
 		<div className="p-32">
+			{isCreatePage && (
+				<Button
+					variant="text"
+					onClick={() => navigate(-1)}
+				>
+					<FuseSvgIcon>heroicons-outline:arrow-left</FuseSvgIcon> VOLTAR
+				</Button>
+			)}
 			<Paper
 				elevation={4}
 				className="p-32 mb-32 flex justify-between"
