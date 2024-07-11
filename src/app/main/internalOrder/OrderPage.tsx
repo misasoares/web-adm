@@ -1,11 +1,12 @@
+import { ChangeEvent, useEffect, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router';
 import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Checkbox, Divider, FormControlLabel, FormGroup, TextField, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-import { ChangeEvent, useEffect, useState } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
+import { formatterNumeral } from 'src/app/utils/formatterNumeral';
 import logoMsContained from '../../../../public/assets/images/logo/logo-ms-default.png';
 import CostumerInfo from './components/CostumerInfo';
 import BasicTable from './components/Table';
@@ -184,7 +185,7 @@ export default function OrderPage() {
 				</div>
 
 				<div className="flex w-full justify-end mt-10">
-					<Typography>Valor total: R${totalValueOrder}</Typography>
+					<Typography>Valor total: {formatterNumeral(Number(totalValueOrder))}</Typography>
 				</div>
 
 				<div className="flex w-full m-10">
@@ -192,7 +193,7 @@ export default function OrderPage() {
 						label="Observações"
 						fullWidth
 						multiline
-						rows={4}
+						rows={10}
 						{...register('observations')}
 					/>
 				</div>
