@@ -37,7 +37,7 @@ export default function BasicTable({ control, append, fields, handleRemoveProduc
 						<TableCell>Quant.</TableCell>
 						<TableCell>Descrição</TableCell>
 						<TableCell align="right">Valor Unit.</TableCell>
-						<TableCell align="right">Total</TableCell>
+						{/* <TableCell align="right">Total</TableCell> */}
 					</TableRow>
 				</TableHead>
 				<TableBody>
@@ -85,7 +85,7 @@ export default function BasicTable({ control, append, fields, handleRemoveProduc
 									control={control}
 									render={({ field }) => (
 										<TextField
-											className="w-84"
+											className="w-96"
 											variant="standard"
 											type="number"
 											{...field}
@@ -97,7 +97,7 @@ export default function BasicTable({ control, append, fields, handleRemoveProduc
 								/>
 							</TableCell>
 
-							<TableCell align="right">
+							{/* <TableCell align="right">
 								<Controller
 									name={`products.${index}.total`}
 									control={control}
@@ -113,7 +113,7 @@ export default function BasicTable({ control, append, fields, handleRemoveProduc
 										/>
 									)}
 								/>
-							</TableCell>
+							</TableCell> */}
 							<TableCell>
 								<FuseSvgIcon
 									className="cursor-pointer"
@@ -128,7 +128,7 @@ export default function BasicTable({ control, append, fields, handleRemoveProduc
 				</TableBody>
 			</Table>
 			<div className="w-full flex justify-end mb-10">
-				<Button onClick={() => append({ quantity: '', description: '', unityValue: '', total: '' })}>
+				<Button onClick={() => append({ quantity: '1', description: '', unityValue: '' })}>
 					<FuseSvgIcon>heroicons-outline:plus-circle</FuseSvgIcon>
 				</Button>
 			</div>
