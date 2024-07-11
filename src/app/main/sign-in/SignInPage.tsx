@@ -141,7 +141,7 @@ function ModernReversedSignInPage() {
 						</div>
 
 						<Typography className="mt-32 text-4xl font-extrabold leading-tight tracking-tight">
-							Login
+							Entrar
 						</Typography>
 						<div className="mt-2 flex items-baseline font-medium">
 							<Typography>Não tem uma conta?</Typography>

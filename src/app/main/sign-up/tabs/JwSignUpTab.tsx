@@ -21,8 +21,8 @@ const schema = z
 			.string()
 			.nonempty('Please enter your password.')
 			.min(8, 'Password is too short - should be 8 chars minimum.'),
-		passwordConfirm: z.string().nonempty('Password confirmation is required'),
-		acceptTermsConditions: z.boolean().refine((val) => val === true, 'The terms and conditions must be accepted.')
+		passwordConfirm: z.string().nonempty('Password confirmation is required')
+		// acceptTermsConditions: z.boolean().refine((val) => val === true, 'The terms and conditions must be accepted.')
 	})
 	.refine((data) => data.password === data.passwordConfirm, {
 		message: 'Passwords must match',
@@ -33,8 +33,8 @@ const defaultValues = {
 	displayName: '',
 	email: '',
 	password: '',
-	passwordConfirm: '',
-	acceptTermsConditions: false
+	passwordConfirm: ''
+	// acceptTermsConditions: false
 };
 
 function JwtSignUpTab() {
@@ -80,7 +80,7 @@ function JwtSignUpTab() {
 					<TextField
 						{...field}
 						className="mb-24"
-						label="Display name"
+						label="Nome"
 						autoFocus
 						type="name"
 						error={!!errors.displayName}
@@ -117,7 +117,7 @@ function JwtSignUpTab() {
 					<TextField
 						{...field}
 						className="mb-24"
-						label="Password"
+						label="Senha"
 						type="password"
 						error={!!errors.password}
 						helperText={errors?.password?.message}
@@ -135,7 +135,7 @@ function JwtSignUpTab() {
 					<TextField
 						{...field}
 						className="mb-24"
-						label="Password (Confirm)"
+						label="Confirmar senha"
 						type="password"
 						error={!!errors.passwordConfirm}
 						helperText={errors?.passwordConfirm?.message}
@@ -145,7 +145,7 @@ function JwtSignUpTab() {
 					/>
 				)}
 			/>
-
+			{/* 
 			<Controller
 				name="acceptTermsConditions"
 				control={control}
@@ -166,7 +166,7 @@ function JwtSignUpTab() {
 						<FormHelperText>{errors?.acceptTermsConditions?.message}</FormHelperText>
 					</FormControl>
 				)}
-			/>
+			/> */}
 
 			<Button
 				variant="contained"

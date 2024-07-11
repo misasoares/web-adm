@@ -1,9 +1,9 @@
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { Chip, Stack, TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Paper } from '@mui/material';
+import { formatterNumeral } from 'src/app/utils/formatterNumeral';
 import { useAppSelector } from 'app/store/hooks';
 import { selectInternalOrder } from '../store/internalOrderSlice';
 import { EInternalOrderStatus, EInternalOrderType } from '../formSchema';
-import { formatterNumeral } from 'src/app/utils/formatterNumeral';
 
 const typeColorMap: Record<
 	EInternalOrderType,
