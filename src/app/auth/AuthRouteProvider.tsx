@@ -5,16 +5,9 @@ import FuseSplashScreen from '@fuse/core/FuseSplashScreen/FuseSplashScreen';
 import { resetUser, selectUser, selectUserRole, setUser, updateUser } from 'src/app/auth/user/store/userSlice';
 import BrowserRouter from '@fuse/core/BrowserRouter';
 import { PartialDeep } from 'type-fest';
-import firebase from 'firebase/compat/app';
 import _ from '@lodash';
 import useJwtAuth, { JwtAuth } from './services/jwt/useJwtAuth';
 import { User } from './user';
-import useFirebaseAuth from './services/firebase/useFirebaseAuth';
-import UserModel from './user/models/UserModel';
-
-/**
- * Initialize Firebase
- */
 
 export type SignInPayload = {
 	email: string;
@@ -29,7 +22,6 @@ export type SignUpPayload = {
 
 type AuthContext = {
 	jwtService?: JwtAuth<User, SignInPayload, SignUpPayload>;
-	firebaseService?: ReturnType<typeof useFirebaseAuth>;
 	signOut?: () => void;
 	updateUser?: (U: PartialDeep<User>) => void;
 	isAuthenticated: boolean;
@@ -64,7 +56,7 @@ function AuthRouteProvider(props: AuthProviderProps) {
 			updateTokenFromHeader: true
 		},
 		onSignedIn: (user: User) => {
-			dispatch(setUser(user));
+			dispatch(setUser({ ...user, role: ['admin'] }));
 			setAuthService('jwt');
 		},
 		onSignedUp: (user: User) => {
@@ -85,64 +77,13 @@ function AuthRouteProvider(props: AuthProviderProps) {
 	});
 
 	/**
-	 * Firebase auth service
-	 */
-	const firebaseService: AuthContext['firebaseService'] = useFirebaseAuth<User>({
-		onSignedIn: (_user) => {
-			firebase
-				.database()
-				.ref(`users/${_user.uid}`)
-				.once('value')
-				.then((snapshot) => {
-					const user = snapshot.val() as User;
-					dispatch(setUser(user));
-					setAuthService('firebase');
-				});
-		},
-		onSignedUp: (userCredential, displayName) => {
-			const _user = userCredential.user;
-
-			const user = UserModel({
-				uid: _user.uid,
-				role: ['admin'],
-				data: {
-					displayName,
-					email: _user.email
-				}
-			});
-
-			firebaseService.updateUser(user);
-
-			setAuthService('firebase');
-		},
-		onSignedOut: () => {
-			dispatch(resetUser());
-			resetAuthService();
-		},
-		onUpdateUser: (user) => {
-			dispatch(updateUser(user));
-		},
-		onError: (error) => {
-			// eslint-disable-next-line no-console
-			console.warn(error);
-		}
-	});
-
-	/**
 	 * Check if services is in loading state
 	 */
-	const isLoading = useMemo(
-		() => jwtService?.isLoading || firebaseService?.isLoading,
-		[jwtService?.isLoading, firebaseService?.isLoading]
-	);
-
+	const isLoading = useMemo(() => jwtService?.isLoading, [jwtService?.isLoading]);
 	/**
 	 * Check if user is authenticated
 	 */
-	const isAuthenticated = useMemo(
-		() => jwtService?.isAuthenticated || firebaseService?.isAuthenticated,
-		[jwtService?.isAuthenticated, firebaseService?.isAuthenticated]
-	);
+	const isAuthenticated = useMemo(() => jwtService?.isAuthenticated, [jwtService?.isAuthenticated]);
 
 	/**
 	 * Combine auth services
@@ -150,16 +91,11 @@ function AuthRouteProvider(props: AuthProviderProps) {
 	const combinedAuth = useMemo<AuthContext>(
 		() => ({
 			jwtService,
-			firebaseService,
 			signOut: () => {
 				const authService = getAuthService();
 
 				if (authService === 'jwt') {
 					return jwtService?.signOut();
-				}
-
-				if (authService === 'firebase') {
-					return firebaseService?.signOut();
 				}
 
 				return null;
@@ -169,10 +105,6 @@ function AuthRouteProvider(props: AuthProviderProps) {
 
 				if (authService === 'jwt') {
 					return jwtService?.updateUser(userData);
-				}
-
-				if (authService === 'firebase') {
-					return firebaseService?.updateUser(_.merge({}, user, userData));
 				}
 
 				return null;

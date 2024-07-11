@@ -142,38 +142,39 @@ export default function ChecksTable({ editMode, rowToEdit }: ChecksTableProps) {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{checks.checks.filter(applyFilters).map((row) => (
-								<TableRow
-									key={row.uid}
-									sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-								>
-									<TableCell>{row.payerName}</TableCell>
-									<TableCell
-										component="th"
-										scope="row"
+							{Array.isArray(checks.checks) &&
+								checks.checks.filter(applyFilters).map((row) => (
+									<TableRow
+										key={row.uid}
+										sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 									>
-										{row.AccountBank.name}
-									</TableCell>
-									<TableCell>{row.checkNumber}</TableCell>
-									<TableCell>{row.value}</TableCell>
-									<TableCell>{formatDate(row.dueDate)}</TableCell>
-									<TableCell className="flex">
-										<FuseSvgIcon
-											className="cursor-pointer"
-											color="primary"
-											onClick={() => handleValuesToEditCheck(row)}
+										<TableCell>{row.payerName}</TableCell>
+										<TableCell
+											component="th"
+											scope="row"
 										>
-											heroicons-outline:pencil
-										</FuseSvgIcon>
-										<FuseSvgIcon
-											className="cursor-pointer"
-											color="primary"
-										>
-											heroicons-outline:eye
-										</FuseSvgIcon>
-									</TableCell>
-								</TableRow>
-							))}
+											{row.AccountBank.name}
+										</TableCell>
+										<TableCell>{row.checkNumber}</TableCell>
+										<TableCell>{row.value}</TableCell>
+										<TableCell>{formatDate(row.dueDate)}</TableCell>
+										<TableCell className="flex">
+											<FuseSvgIcon
+												className="cursor-pointer"
+												color="primary"
+												onClick={() => handleValuesToEditCheck(row)}
+											>
+												heroicons-outline:pencil
+											</FuseSvgIcon>
+											<FuseSvgIcon
+												className="cursor-pointer"
+												color="primary"
+											>
+												heroicons-outline:eye
+											</FuseSvgIcon>
+										</TableCell>
+									</TableRow>
+								))}
 						</TableBody>
 					</Table>
 				</TableContainer>

@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Checkbox, Divider, FormControlLabel, FormGroup, TextField, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { formatterNumeral } from 'src/app/utils/formatterNumeral';
-import logoMsContained from '../../../../public/assets/images/logo/logo-ms-default.png';
+import logoMsContained from 'src/assets/images/logo-ms-adm.png';
 import CostumerInfo from './components/CostumerInfo';
 import BasicTable from './components/Table';
 import {

@@ -5,13 +5,13 @@ import { FuseSettingsConfigType } from '@fuse/core/FuseSettings/FuseSettings';
  */
 export type User = {
 	uid: string;
+	displayName: string;
+	email?: string;
 	role: string[] | string | null;
-	data: {
-		displayName: string;
-		photoURL?: string;
-		email?: string;
-		shortcuts?: string[];
-		settings?: Partial<FuseSettingsConfigType>;
-		loginRedirectUrl?: string; // The URL to redirect to after login.
-	};
+	// data: {
+	// 	photoURL?: string;
+	// 	shortcuts?: string[];
+	// 	settings?: Partial<FuseSettingsConfigType>;
+	// 	loginRedirectUrl?: string; // The URL to redirect to after login.
+	// };
 };

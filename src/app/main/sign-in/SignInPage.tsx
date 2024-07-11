@@ -10,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { Controller, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from 'src/app/auth/AuthRouteProvider';
 import { z } from 'zod';
 
 /**
@@ -45,9 +46,18 @@ function ModernReversedSignInPage() {
 
 	const { isValid, dirtyFields, errors } = formState;
 
+	const { jwtService } = useAuth();
+
 	function onSubmit(data) {
-		reset(defaultValues);
-		navigate('/checks');
+		jwtService
+			.signIn(data)
+			.then(() => {
+				reset(defaultValues);
+				navigate('/checks');
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	}
 
 	return (

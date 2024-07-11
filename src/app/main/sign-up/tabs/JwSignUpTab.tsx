@@ -1,12 +1,8 @@
-import { Controller, useForm } from 'react-hook-form';
-import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import FormHelperText from '@mui/material/FormHelperText';
-import Button from '@mui/material/Button';
-import _ from '@lodash';
 import { zodResolver } from '@hookform/resolvers/zod';
+import _ from '@lodash';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { SignUpPayload, useAuth } from '../../../auth/AuthRouteProvider';
 

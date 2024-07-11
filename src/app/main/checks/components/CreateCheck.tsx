@@ -69,23 +69,27 @@ export default function CheckCreateComponent({ rowToEdit, editMode, setEditMode 
 	}, [rowToEdit, editMode]);
 
 	async function findAcc(params: string) {
-		const isThereAcc = await axios.get<IAccountBank[]>(`${import.meta.env.VITE_API_KEY}/checks/${params}`);
+		const isThereAcc = await axios.get<{ data: IAccountBank[] }>(
+			`${import.meta.env.VITE_API_KEY}/checks/${params}`
+		);
 
 		const { data } = isThereAcc;
 
 		if (accNameValue) {
-			return data;
+			return data.data;
 		}
 
 		return [];
 	}
 
 	async function findPayerName(name: string) {
-		const isTherePayerName = await axios.get<IPayerName[]>(`${import.meta.env.VITE_API_KEY}/checks/payers/${name}`);
+		const isTherePayerName = await axios.get<{ data: IPayerName[] }>(
+			`${import.meta.env.VITE_API_KEY}/checks/payers/${name}`
+		);
 		const { data } = isTherePayerName;
 
 		if (isTherePayerName) {
-			return data;
+			return data.data;
 		}
 		return [];
 	}
@@ -172,7 +176,9 @@ export default function CheckCreateComponent({ rowToEdit, editMode, setEditMode 
 		const fetchData = async () => {
 			const find = await findPayerName(watch('payerName'));
 
-			setOptionsPayerName(find.map((item) => item.name));
+			if (find) {
+				setOptionsPayerName(find.map((item) => item.name));
+			}
 
 			if (watch('payerName')) {
 				const findPayer = find.find((item) => item.name === watch('payerName'));

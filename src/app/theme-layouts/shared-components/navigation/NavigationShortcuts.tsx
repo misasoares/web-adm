@@ -21,7 +21,7 @@ function NavigationShortcuts(props: NavigationShortcutsProps) {
 	const dispatch = useAppDispatch();
 	const navigation = useAppSelector(selectFlatNavigation);
 
-	const userShortcuts = useAppSelector(selectUserShortcuts) || [];
+	const userShortcuts = []; //useAppSelector(selectUserShortcuts) ||;
 	const isUserGuest = useAppSelector(selectIsUserGuest);
 	const prevUserShortcuts = usePrevious(userShortcuts);
 

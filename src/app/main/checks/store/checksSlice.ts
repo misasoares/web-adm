@@ -7,18 +7,18 @@ import { CheckSliceType, ChecksType } from './types/typesSlice';
 export const addChecks = createAsyncThunk('checks/addChecks', async (data: SchemaCheckType) => {
 	const res = await axios.post<ChecksType>(`${import.meta.env.VITE_API_KEY}/checks`, data);
 
-	return res.data;
+	return res.data.data;
 });
 
 export const updateCheck = createAsyncThunk('checks/updateCheck', async (data: SchemaCheckType) => {
 	const res = await axios.put<ChecksType>(`${import.meta.env.VITE_API_KEY}/checks/${data.uid}`, data);
-	return res.data;
+	return res.data.data;
 });
 
 export const getChecks = createAsyncThunk('checks/getChecks', async () => {
 	const res = await axios.get<ChecksType[]>(`${import.meta.env.VITE_API_KEY}/checks`);
 
-	return res.data;
+	return res.data.data;
 });
 
 const initialState: CheckSliceType = {

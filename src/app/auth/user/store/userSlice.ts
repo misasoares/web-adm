@@ -1,26 +1,25 @@
 /* eslint import/no-extraneous-dependencies: off */
+import _ from '@lodash';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import settingsConfig from 'app/configs/settingsConfig';
+import { RootState } from 'app/store/store';
 import { User } from 'src/app/auth/user';
 import { PartialDeep } from 'type-fest';
-import _ from '@lodash';
-import { RootState } from 'app/store/store';
 import userModel from '../models/UserModel';
 
-function updateRedirectUrl(user: PartialDeep<User>) {
-	/*
-    You can redirect the logged-in user to a specific route depending on his role
-    */
-	if (user?.data?.loginRedirectUrl && user?.data?.loginRedirectUrl !== '') {
-		settingsConfig.loginRedirectUrl = user.data.loginRedirectUrl; // for example 'apps/academy'
-	}
-}
+// function updateRedirectUrl(user: PartialDeep<User>) {
+// 	/*
+//     You can redirect the logged-in user to a specific route depending on his role
+//     */
+// 	if (user?.data?.loginRedirectUrl && user?.data?.loginRedirectUrl !== '') {
+// 		settingsConfig.loginRedirectUrl = user.data.loginRedirectUrl; // for example 'apps/academy'
+// 	}
+// }
 
 /**
  * Sets the user object in the Redux store.
  */
 export const setUser = createAsyncThunk<User, User>('user/setUser', async (user) => {
-	updateRedirectUrl(user);
+	//updateRedirectUrl(user);
 
 	return user;
 });
@@ -119,9 +118,9 @@ export const selectIsUserGuest = (state: RootState) => {
 	return !userRole || userRole?.length === 0;
 };
 
-export const selectUserShortcuts = (state: RootState) => state.user?.data?.shortcuts;
+// export const selectUserShortcuts = (state: RootState) => state.user?.data?.shortcuts;
 
-export const selectUserSettings = (state: RootState) => state.user?.data?.settings;
+// export const selectUserSettings = (state: RootState) => state.user?.data?.settings;
 
 export type userSliceType = typeof userSlice;
 

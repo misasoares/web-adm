@@ -25,7 +25,7 @@ const InternalOrderConfig: FuseRouteConfigType = {
 			}
 		}
 	},
-	auth: authRoles.onlyGuest,
+	auth: authRoles.admin,
 	routes: [
 		{
 			path: 'internal-order/:uid',

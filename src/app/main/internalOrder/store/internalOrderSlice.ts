@@ -7,13 +7,13 @@ import { TCreateOrderSchema } from '../formSchema';
 export const createInternalOrder = createAsyncThunk('internalOrder/create', async (data: TCreateOrderSchema) => {
 	const res = await axios.post<InternalOrderType>(`${import.meta.env.VITE_API_KEY}/internal-order`, data);
 
-	return res.data;
+	return res.data.data;
 });
 
 export const getInternalOrder = createAsyncThunk('internalOrder/get', async () => {
 	const res = await axios.get<InternalOrderType[]>(`${import.meta.env.VITE_API_KEY}/internal-order`);
 
-	return res.data;
+	return res.data.data;
 });
 
 const initialState: InternalOrderSliceType = {

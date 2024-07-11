@@ -3,21 +3,6 @@ import { Link } from 'react-router-dom';
 import { Box, Paper, Typography } from '@mui/material';
 import JwtSignUpTab from './tabs/JwSignUpTab';
 
-const tabs = [
-	{
-		id: 'jwt',
-		title: 'JWT',
-		logo: 'assets/images/logo/jwt.svg',
-		logoClass: 'h-40 p-4 bg-black rounded-12'
-	},
-	{
-		id: 'firebase',
-		title: 'Firebase',
-		logo: 'assets/images/logo/firebase.svg',
-		logoClass: 'h-40'
-	}
-];
-
 /**
  * The sign up page.
  */

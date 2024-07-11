@@ -3,16 +3,18 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import _ from '@lodash';
 import { PartialDeep } from 'type-fest';
+import { endpoints } from 'src/app/shared/services/endpoints';
+import { getDisplayName } from '@mui/utils';
 
-const defaultAuthConfig = {
-	tokenStorageKey: 'jwt_access_token',
-	signInUrl: 'api/auth/sign-in',
-	signUpUrl: 'api/auth/sign-up',
-	tokenRefreshUrl: 'api/auth/refresh',
-	getUserUrl: 'api/auth/user',
-	updateUserUrl: 'api/auth/user',
-	updateTokenFromHeader: false
-};
+// const defaultAuthConfig = {
+// 	tokenStorageKey: 'jwt_access_token',
+// 	signInUrl: '/auth/sign-in',
+// 	signUpUrl: '/users',
+// 	tokenRefreshUrl: '/auth/refresh',
+// 	getUserUrl: '/auth/user',
+// 	updateUserUrl: '/auth/user',
+// 	updateTokenFromHeader: false
+// };
 
 export type JwtAuthProps<T> = {
 	config: {
@@ -63,9 +65,10 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	const { config, onSignedIn, onSignedOut, onSignedUp, onError, onUpdateUser } = props;
 
 	// Merge default config with the one from the props
-	const authConfig = _.defaults(config, defaultAuthConfig);
+	// const authConfig = _.defaults(config, defaultAuthConfig);
 
 	const [user, setUser] = useState<User>(null);
+
 	const [isLoading, setIsLoading] = useState(true);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -74,13 +77,13 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 */
 	const setSession = useCallback((accessToken: string) => {
 		if (accessToken) {
-			localStorage.setItem(authConfig.tokenStorageKey, accessToken);
+			localStorage.setItem('authConfig.tokenStorageKey', accessToken);
 			axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 		}
 	}, []);
 
 	const resetSession = useCallback(() => {
-		localStorage.removeItem(authConfig.tokenStorageKey);
+		localStorage.removeItem('authConfig.tokenStorageKey');
 		delete axios.defaults.headers.common.Authorization;
 	}, []);
 
@@ -88,7 +91,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 * Get access token from local storage
 	 */
 	const getAccessToken = useCallback(() => {
-		return localStorage.getItem(authConfig.tokenStorageKey);
+		return localStorage.getItem('authConfig.tokenStorageKey');
 	}, []);
 
 	/**
@@ -99,7 +102,10 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 
 		setIsAuthenticated(true);
 
-		setUser(userData);
+		// setUser({
+		// 	email: userData.data.email,
+		// 	displayName: userData.data.displayName
+		// });
 
 		onSignedIn(userData);
 	}, []);
@@ -178,7 +184,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 				try {
 					setIsLoading(true);
 
-					const response: AxiosResponse<User> = await axios.get(authConfig.getUserUrl, {
+					const response: AxiosResponse<User> = await axios.get('authConfig.getUserUrl', {
 						headers: { Authorization: `Bearer ${accessToken}` }
 					});
 
@@ -218,14 +224,17 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 * Sign in
 	 */
 	const signIn = async (credentials: SignInPayload) => {
-		const response = axios.post(authConfig.signInUrl, credentials);
+		const response = axios.post(import.meta.env.VITE_API_KEY + endpoints.login, credentials);
 
 		response.then(
 			(res: AxiosResponse<{ user: User; access_token: string }>) => {
-				const userData = res?.data?.user;
-				const accessToken = res?.data?.access_token;
+				const userData = res?.data?.data.user;
+				const accessToken = res?.data?.data.access_token;
 
-				handleSignInSuccess(userData, accessToken);
+				handleSignInSuccess(
+					{ uid: userData.uid, data: { email: userData.email, displayName: userData.displayName } },
+					accessToken
+				);
 
 				return userData;
 			},
@@ -245,7 +254,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 * Sign up
 	 */
 	const signUp = useCallback((data: SignUpPayload) => {
-		const response = axios.post(authConfig.signUpUrl, data);
+		const response = axios.post(import.meta.env.VITE_API_KEY + endpoints.signup, data);
 
 		response.then(
 			(res: AxiosResponse<{ user: User; access_token: string }>) => {
@@ -286,7 +295,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	const updateUser = useCallback(async (userData: PartialDeep<User>) => {
 		try {
 			const response: AxiosResponse<User, PartialDeep<User>> = await axios.put(
-				authConfig.updateUserUrl,
+				'authConfig.updateUserUrl',
 				userData
 			);
 
@@ -309,7 +318,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	const refreshToken = async () => {
 		setIsLoading(true);
 		try {
-			const response: AxiosResponse<string> = await axios.post(authConfig.tokenRefreshUrl);
+			const response: AxiosResponse<string> = await axios.post('authConfig.tokenRefreshUrl');
 
 			const accessToken = response?.headers?.['New-Access-Token'] as string;
 
@@ -333,7 +342,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 *
 	 */
 	useEffect(() => {
-		if (authConfig.updateTokenFromHeader && isAuthenticated) {
+		if ('authConfig.updateTokenFromHeader' && isAuthenticated) {
 			axios.interceptors.response.use(
 				(response) => {
 					const newAccessToken = response?.headers?.['New-Access-Token'] as string;

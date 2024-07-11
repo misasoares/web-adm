@@ -51,47 +51,48 @@ export default function TableToList() {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{internalOrder.payload.map((row) => (
-						<TableRow
-							key={row.uid}
-							sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-						>
-							<TableCell
-								component="th"
-								scope="row"
+					{Array.isArray(internalOrder.payload) &&
+						internalOrder.payload.map((row) => (
+							<TableRow
+								key={row.uid}
+								sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 							>
-								{row.costumer.name}
-							</TableCell>
-							<TableCell>
-								<Stack
-									className="flex justify-end"
-									direction="row"
-									spacing={1}
+								<TableCell
+									component="th"
+									scope="row"
 								>
-									<Chip
-										label={typeLabel[row.type]}
-										color={typeColorMap[row.type]}
-									/>
-								</Stack>
-							</TableCell>
-							<TableCell>
-								<Stack
-									direction="row"
-									spacing={1}
-									className="flex justify-end"
-								>
-									<Chip
-										label={statusLabel[row.status]}
-										color={statusColorMap[row.status]}
-									/>
-								</Stack>
-							</TableCell>
-							<TableCell align="right">{formatterNumeral(row.totalValue)}</TableCell>
-							<TableCell className="flex justify-end">
-								<FuseSvgIcon color="action">heroicons-outline:pencil</FuseSvgIcon>
-							</TableCell>
-						</TableRow>
-					))}
+									{row.costumer.name}
+								</TableCell>
+								<TableCell>
+									<Stack
+										className="flex justify-end"
+										direction="row"
+										spacing={1}
+									>
+										<Chip
+											label={typeLabel[row.type]}
+											color={typeColorMap[row.type]}
+										/>
+									</Stack>
+								</TableCell>
+								<TableCell>
+									<Stack
+										direction="row"
+										spacing={1}
+										className="flex justify-end"
+									>
+										<Chip
+											label={statusLabel[row.status]}
+											color={statusColorMap[row.status]}
+										/>
+									</Stack>
+								</TableCell>
+								<TableCell align="right">{formatterNumeral(row.totalValue)}</TableCell>
+								<TableCell className="flex justify-end">
+									<FuseSvgIcon color="action">heroicons-outline:pencil</FuseSvgIcon>
+								</TableCell>
+							</TableRow>
+						))}
 				</TableBody>
 			</Table>
 		</TableContainer>
