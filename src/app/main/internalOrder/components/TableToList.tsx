@@ -3,6 +3,7 @@ import { Chip, Stack, TableRow, TableHead, TableContainer, TableCell, TableBody,
 import { useAppSelector } from 'app/store/hooks';
 import { selectInternalOrder } from '../store/internalOrderSlice';
 import { EInternalOrderStatus, EInternalOrderType } from '../formSchema';
+import { formatterNumeral } from 'src/app/utils/formatterNumeral';
 
 const typeColorMap: Record<
 	EInternalOrderType,
@@ -18,6 +19,17 @@ const statusColorMap: Record<
 > = {
 	[EInternalOrderStatus.CONCLUDED]: 'success',
 	[EInternalOrderStatus.IN_PROGRESS]: 'warning'
+};
+
+const typeLabel = {
+	[EInternalOrderType.BUDGET]: 'Orçamento',
+	[EInternalOrderType.ORDER]: 'Pedido',
+	[EInternalOrderType.RECEIPT]: 'Recibo'
+};
+
+const statusLabel = {
+	[EInternalOrderStatus.CONCLUDED]: 'Concluído',
+	[EInternalOrderStatus.IN_PROGRESS]: 'Em andamento'
 };
 
 export default function TableToList() {
@@ -57,7 +69,7 @@ export default function TableToList() {
 									spacing={1}
 								>
 									<Chip
-										label={row.type}
+										label={typeLabel[row.type]}
 										color={typeColorMap[row.type]}
 									/>
 								</Stack>
@@ -69,12 +81,12 @@ export default function TableToList() {
 									className="flex justify-end"
 								>
 									<Chip
-										label={row.status}
+										label={statusLabel[row.status]}
 										color={statusColorMap[row.status]}
 									/>
 								</Stack>
 							</TableCell>
-							<TableCell align="right">{row.totalValue}</TableCell>
+							<TableCell align="right">{formatterNumeral(row.totalValue)}</TableCell>
 							<TableCell className="flex justify-end">
 								<FuseSvgIcon color="action">heroicons-outline:pencil</FuseSvgIcon>
 							</TableCell>
