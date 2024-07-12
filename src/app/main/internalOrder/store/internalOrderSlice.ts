@@ -1,19 +1,22 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { httpClient } from 'src/app/shared/services/api';
 import { RootState } from 'app/store/store';
 import { InternalOrderType, InternalOrderSliceType } from './types/typesSlice';
 import { TCreateOrderSchema } from '../formSchema';
 
 export const createInternalOrder = createAsyncThunk('internalOrder/create', async (data: TCreateOrderSchema) => {
-	const res = await axios.post<InternalOrderType>(`${import.meta.env.VITE_API_KEY}/internal-order`, data);
+	const res = await httpClient.doPost<InternalOrderType>(`/internal-order`, data);
 
-	return res.data.data;
+	if (res.success) {
+		return res.data;
+	}
 });
 
 export const getInternalOrder = createAsyncThunk('internalOrder/get', async () => {
-	const res = await axios.get<InternalOrderType[]>(`${import.meta.env.VITE_API_KEY}/internal-order`);
-
-	return res.data.data;
+	const res = await httpClient.doGet<InternalOrderType[]>(`/internal-order`);
+	if (res.success) {
+		return res.data;
+	}
 });
 
 const initialState: InternalOrderSliceType = {

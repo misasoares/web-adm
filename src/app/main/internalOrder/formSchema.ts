@@ -13,8 +13,8 @@ export enum EInternalOrderType {
 export const createOrderSchema = z.object({
 	type: z.nativeEnum(EInternalOrderType),
 	date: z.string(),
-	costumerName: z.string(),
-	phone: z.string(),
+	costumerName: z.string().min(3, { message: 'É necessário adicionar um cliente.' }),
+	phone: z.string().min(3, { message: 'É necessário adicionar um telefone.' }),
 	address: z.string(),
 	vehicles: z.string(),
 	cpfOrCnpj: z.string(),
@@ -28,7 +28,8 @@ export const createOrderSchema = z.object({
 		})
 	),
 	observations: z.string().optional(),
-	totalValue: z.number().optional()
+	totalValue: z.number().optional(),
+	orderNumber: z.string()
 });
 
 export type TCreateOrderSchema = z.infer<typeof createOrderSchema>;
@@ -48,5 +49,6 @@ export const defaultValues: TCreateOrderSchema = {
 	phone: '',
 	address: '',
 	vehicles: '',
-	products: [{ quantity: '1', description: '', unityValue: '' }]
+	products: [{ quantity: '1', description: '', unityValue: '' }],
+	orderNumber: ''
 };

@@ -114,9 +114,9 @@ export default function BasicTable({ control, append, fields, handleRemoveProduc
 									)}
 								/>
 							</TableCell> */}
-							<TableCell>
+							<TableCell className="no-print">
 								<FuseSvgIcon
-									className="cursor-pointer"
+									className="cursor-pointer "
 									color="action"
 									onClick={() => handleRemoveProduct(index)}
 								>
@@ -127,7 +127,7 @@ export default function BasicTable({ control, append, fields, handleRemoveProduc
 					))}
 				</TableBody>
 			</Table>
-			<div className="w-full flex justify-end mb-10">
+			<div className="w-full flex justify-end mb-10 no-print">
 				<Button onClick={() => append({ quantity: '1', description: '', unityValue: '' })}>
 					<FuseSvgIcon>heroicons-outline:plus-circle</FuseSvgIcon>
 				</Button>

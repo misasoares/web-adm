@@ -77,13 +77,13 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 */
 	const setSession = useCallback((accessToken: string) => {
 		if (accessToken) {
-			localStorage.setItem('authConfig.tokenStorageKey', accessToken);
+			localStorage.setItem('jwt_access_token', accessToken);
 			axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 		}
 	}, []);
 
 	const resetSession = useCallback(() => {
-		localStorage.removeItem('authConfig.tokenStorageKey');
+		localStorage.removeItem('jwt_access_token');
 		delete axios.defaults.headers.common.Authorization;
 	}, []);
 
@@ -91,7 +91,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 * Get access token from local storage
 	 */
 	const getAccessToken = useCallback(() => {
-		return localStorage.getItem('authConfig.tokenStorageKey');
+		return localStorage.getItem('jwt_access_token');
 	}, []);
 
 	/**
@@ -184,7 +184,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 				try {
 					setIsLoading(true);
 
-					const response: AxiosResponse<User> = await axios.get('authConfig.getUserUrl', {
+					const response: AxiosResponse<User> = await axios.get('jwt_access_token', {
 						headers: { Authorization: `Bearer ${accessToken}` }
 					});
 

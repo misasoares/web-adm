@@ -37,7 +37,7 @@ interface TestTemp {
 }
 
 export const apiService = createApi({
-	baseQuery: fetchBaseQuery({ baseUrl: 'https://api-rapidoms-v3.onrender.com/api/' }),
+	baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_KEY }),
 	endpoints: (builder) => ({
 		searchChecks: builder.query<TestTemp[], string>({
 			query: (params) => `checks/${params}`

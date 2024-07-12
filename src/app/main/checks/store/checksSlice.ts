@@ -1,24 +1,30 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'app/store/store';
-import axios from 'axios';
+import { httpClient } from 'src/app/shared/services/api';
 import { SchemaCheckType } from '../types/ChecksFormTypes';
 import { CheckSliceType, ChecksType } from './types/typesSlice';
 
 export const addChecks = createAsyncThunk('checks/addChecks', async (data: SchemaCheckType) => {
-	const res = await axios.post<ChecksType>(`${import.meta.env.VITE_API_KEY}/checks`, data);
+	const res = await httpClient.doPost<ChecksType>(`/checks`, data);
 
-	return res.data.data;
+	if (res.success) {
+		return res.data;
+	}
 });
 
 export const updateCheck = createAsyncThunk('checks/updateCheck', async (data: SchemaCheckType) => {
-	const res = await axios.put<ChecksType>(`${import.meta.env.VITE_API_KEY}/checks/${data.uid}`, data);
-	return res.data.data;
+	const res = await httpClient.doPut<ChecksType>(`/checks/${data.uid}`, data);
+	if (res.success) {
+		return res.data;
+	}
 });
 
 export const getChecks = createAsyncThunk('checks/getChecks', async () => {
-	const res = await axios.get<ChecksType[]>(`${import.meta.env.VITE_API_KEY}/checks`);
+	const res = await httpClient.doGet<ChecksType[]>(`/checks`);
 
-	return res.data.data;
+	if (res.success) {
+		return res.data;
+	}
 });
 
 const initialState: CheckSliceType = {

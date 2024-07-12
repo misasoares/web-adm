@@ -2,45 +2,61 @@
 /*  Print
 /*----------------------------------------------------------------*/
 @media all {
-    /* Never show page breaks in normal view */
-    .page-break-after,
-    .page-break-before {
-        display: none;
-    }
+	/* Never show page breaks in normal view */
+	.page-break-after,
+	.page-break-before {
+		display: none;
+	}
 }
 
 @media print {
-    /* html and body tweaks */
-    html, body {
-        height: auto !important;
+	/* html and body tweaks */
+	html,
+	body {
+		/* height: auto !important;
         overflow: initial !important;
-        background: none
-    }
+        background: none */
+		visibility: hidden;
+	}
+	.print-container,
+	.print-container * {
+		visibility: visible; /* Apenas torna visível o conteúdo desejado */
+	}
+	.no-print {
+		display: none !important;
+	}
 
-    /* Page breaks */
-    .page-break-after {
-        display: block;
-        page-break-after: always;
-        position: relative;
-    }
+	.print-container {
+		position: absolute;
+		left: 0;
+		top: 0; /* Para garantir que o conteúdo impresso seja posicionado corretamente */
+		padding: 100px;
+		margin-top: 200px;
+	}
+	/* Page breaks */
+	.page-break-after {
+		display: block;
+		page-break-after: always;
+		position: relative;
+	}
 
-    .page-break-before {
-        display: block;
-        page-break-before: always;
-        position: relative;
-    }
+	.page-break-before {
+		display: block;
+		page-break-before: always;
+		position: relative;
+	}
 
-    /* General styles */
-    #fuse-toolbar,
-    #fuse-footer,
-    #fuse-navbar,
-    #fuse-settings-presets,
-    #fuse-layout .ps > .ps__rail-x,
-    #fuse-layout .ps > .ps__rail-y {
-        display: none !important;
-    }
+	/* General styles */
+	#fuse-toolbar,
+	#fuse-footer,
+	#fuse-navbar,
+	#fuse-settings-presets,
+	#fuse-layout .ps > .ps__rail-x,
+	#fuse-layout .ps > .ps__rail-y {
+		display: none !important;
+	}
 
-    #fuse-layout .ps {
-        overflow: visible !important;
-    }
+	#fuse-layout .ps {
+		overflow: visible !important;
+	}
 }
