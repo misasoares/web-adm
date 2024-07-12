@@ -104,15 +104,21 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 	function submitForm(data: TCreateOrderSchema) {
 		let submitData = data;
 
-		if (data.type !== EInternalOrderType.ORDER) {
-			submitData = { ...data, status: EInternalOrderStatus.CONCLUDED };
-		} else {
-			submitData = { ...data, status: EInternalOrderStatus.IN_PROGRESS };
+		if (!editMode) {
+			if (data.type !== EInternalOrderType.ORDER) {
+				submitData = { ...data, status: EInternalOrderStatus.CONCLUDED };
+			} else {
+				submitData = { ...data, status: EInternalOrderStatus.IN_PROGRESS };
+			}
+
+			dispatch(createInternalOrder({ ...submitData, totalValue: totalValueOrder }));
+			dispatch(showMessage({ message: 'Pedido feito com sucesso.', variant: 'success' }));
+			setDisablePrint(false);
 		}
 
-		dispatch(createInternalOrder({ ...submitData, totalValue: totalValueOrder }));
-		dispatch(showMessage({ message: 'Pedido feito com sucesso.', variant: 'success' }));
-		setDisablePrint(false);
+		if (editMode) {
+			//não pode submeter caso status ja esteja em concluido.
+		}
 	}
 
 	const printRef = useRef<HTMLDivElement>(null);
@@ -199,12 +205,36 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 				//falta ajustar produtos
 			};
 			reset(formattedOrder);
+
+			setDisablePrint(false);
 		}
 	}, [editMode]);
+
+	const status = Object.keys(EInternalOrderStatus);
+	const statusValues = {
+		[EInternalOrderStatus.CONCLUDED]: 'Concluído',
+		[EInternalOrderStatus.IN_PROGRESS]: 'Em andamento'
+	};
 
 	return (
 		<div className="flex flex-col items-center">
 			<form onSubmit={handleSubmit(submitForm)}>
+				{editMode && orderToEdit && (
+					<FormGroup className="flex flex-row">
+						{status.map((item) => (
+							<FormControlLabel
+								key={item}
+								control={
+									<Checkbox
+										onChange={() => setValue('status', item as EInternalOrderStatus)}
+										checked={statusValues[item] === statusValues[watch('status')]}
+									/>
+								}
+								label={statusValues[item as EInternalOrderStatus]}
+							/>
+						))}
+					</FormGroup>
+				)}
 				<div ref={printRef}>
 					<div className="border-black border-1 flex-col p-24">
 						<Typography
