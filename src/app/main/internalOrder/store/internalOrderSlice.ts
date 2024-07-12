@@ -46,5 +46,5 @@ export const internalOrderSlice = createSlice({
 	}
 });
 
-export const selectInternalOrder = (state: RootState) => state.internalOrder;
+export const selectInternalOrder = (state: RootState) => state.internalOrder.payload;
 export default internalOrderSlice.reducer;

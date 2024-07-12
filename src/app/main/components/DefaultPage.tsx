@@ -1,18 +1,19 @@
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { Button, Paper, Typography } from '@mui/material';
+import { ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 
 interface DefaultPageProps {
 	title: string;
 	isCreatePage?: boolean;
 	createButton?: string;
-	content: JSX.Element;
+	children: ReactNode;
 	secondaryContent?: JSX.Element;
 }
 
 export default function DefaultPage({
 	title,
-	content,
+	children,
 	secondaryContent,
 	createButton,
 	isCreatePage
@@ -50,7 +51,7 @@ export default function DefaultPage({
 				elevation={4}
 				className="p-32"
 			>
-				{content}
+				{children}
 			</Paper>
 
 			{secondaryContent && (

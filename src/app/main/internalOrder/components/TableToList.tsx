@@ -4,6 +4,7 @@ import { formatterNumeral } from 'src/app/utils/formatterNumeral';
 import { useAppSelector } from 'app/store/hooks';
 import { selectInternalOrder } from '../store/internalOrderSlice';
 import { EInternalOrderStatus, EInternalOrderType } from '../formSchema';
+import { useNavigate } from 'react-router';
 
 const typeColorMap: Record<
 	EInternalOrderType,
@@ -34,6 +35,7 @@ const statusLabel = {
 
 export default function TableToList() {
 	const internalOrder = useAppSelector(selectInternalOrder);
+	const navigate = useNavigate();
 
 	return (
 		<TableContainer component={Paper}>
@@ -51,8 +53,8 @@ export default function TableToList() {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{Array.isArray(internalOrder.payload) &&
-						internalOrder.payload.map((row) => (
+					{Array.isArray(internalOrder) &&
+						internalOrder.map((row) => (
 							<TableRow
 								key={row.uid}
 								sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -88,8 +90,14 @@ export default function TableToList() {
 									</Stack>
 								</TableCell>
 								<TableCell align="right">{formatterNumeral(row.totalValue)}</TableCell>
-								<TableCell className="flex justify-end">
-									<FuseSvgIcon color="action">heroicons-outline:pencil</FuseSvgIcon>
+								<TableCell className="flex justify-end ">
+									<FuseSvgIcon
+										className="cursor-pointer"
+										color="action"
+										onClick={() => navigate(row.uid)}
+									>
+										heroicons-outline:pencil
+									</FuseSvgIcon>
 								</TableCell>
 							</TableRow>
 						))}

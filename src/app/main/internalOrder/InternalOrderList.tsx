@@ -15,7 +15,8 @@ export default function InternalOrderList() {
 		<DefaultPage
 			title="Listagem de pedidos"
 			createButton="Novo pedido"
-			content={<TableToList />}
-		/>
+		>
+			<TableToList />
+		</DefaultPage>
 	);
 }

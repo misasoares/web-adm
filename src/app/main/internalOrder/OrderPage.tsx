@@ -1,14 +1,15 @@
 import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { zodResolver } from '@hookform/resolvers/zod';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Button, Checkbox, Divider, FormControlLabel, FormGroup, TextField, Typography } from '@mui/material';
-import { useAppDispatch, useAppSelector } from 'app/store/hooks';
+import { useAppDispatch } from 'app/store/hooks';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { formatterNumeral } from 'src/app/utils/formatterNumeral';
 import logoMsContained from 'src/assets/images/logo-png-cor.png';
+import 'src/styles/print.css';
 import CostumerInfo from './components/CostumerInfo';
 import BasicTable from './components/Table';
 import {
@@ -18,13 +19,18 @@ import {
 	createOrderSchema,
 	defaultValues
 } from './formSchema';
-import { createInternalOrder, selectInternalOrder } from './store/internalOrderSlice';
-import 'src/styles/print.css';
+import { createInternalOrder } from './store/internalOrderSlice';
+import { InternalOrderType } from './store/types/typesSlice';
 
-export default function OrderPage() {
+interface IPropsOrderPage {
+	editMode: boolean;
+	orderToEdit: InternalOrderType | null;
+}
+
+export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const internalOrders = useAppSelector(selectInternalOrder);
+
 	const [typeOrder, setTypeOrder] = useState({
 		order: true,
 		receipt: false,
@@ -39,6 +45,7 @@ export default function OrderPage() {
 		register,
 		watch,
 		handleSubmit,
+		reset,
 		formState: { errors }
 	} = useForm<TCreateOrderSchema>({
 		mode: 'onChange',
@@ -135,21 +142,6 @@ export default function OrderPage() {
 		}
 	};
 
-	useEffect(() => {
-		let totalOfOrder = 0;
-
-		const subscription = watch((value) => {
-			totalOfOrder = value.products.reduce((acc, product) => {
-				const totalByProduct = +product.quantity * +product.unityValue;
-				return acc + totalByProduct;
-			}, 0);
-
-			setTotalValueOrder(totalOfOrder);
-		});
-
-		return () => subscription.unsubscribe();
-	}, [watch]);
-
 	function generateOrderNumber() {
 		const numbers = '0123456789';
 		const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -175,9 +167,40 @@ export default function OrderPage() {
 	}
 
 	useEffect(() => {
-		const orderNumber = generateOrderNumber();
-		setValue('orderNumber', orderNumber);
-	}, []);
+		let totalOfOrder = 0;
+
+		const subscription = watch((value) => {
+			totalOfOrder = value.products.reduce((acc, product) => {
+				const totalByProduct = +product.quantity * +product.unityValue;
+				return acc + totalByProduct;
+			}, 0);
+
+			setTotalValueOrder(totalOfOrder);
+		});
+
+		return () => subscription.unsubscribe();
+	}, [watch]);
+
+	useEffect(() => {
+		if (!editMode) {
+			const orderNumber = generateOrderNumber();
+			setValue('orderNumber', orderNumber);
+		}
+		if (editMode && orderToEdit) {
+			const formattedOrder = {
+				...orderToEdit,
+
+				date: orderToEdit.createdAt, //ajustar
+
+				costumerName: orderToEdit.costumer.name,
+				phone: orderToEdit.costumer.phone,
+				address: orderToEdit.costumer.address,
+				cpfOrCnpj: orderToEdit.costumer.cpfOrCnpj
+				//falta ajustar produtos
+			};
+			reset(formattedOrder);
+		}
+	}, [editMode]);
 
 	return (
 		<div className="flex flex-col items-center">
