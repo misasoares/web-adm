@@ -226,6 +226,7 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 								key={item}
 								control={
 									<Checkbox
+										color="primary"
 										onChange={() => setValue('status', item as EInternalOrderStatus)}
 										checked={statusValues[item] === statusValues[watch('status')]}
 									/>

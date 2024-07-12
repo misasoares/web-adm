@@ -29,7 +29,7 @@ export default function InternalOrderPage() {
 
 	return (
 		<DefaultPage
-			title="Criar pedido"
+			title={editMode ? `Editar pedido de: ${orderToEdit.costumer.name}` : 'Criar novo pedido'}
 			isCreatePage
 		>
 			<OrderPage

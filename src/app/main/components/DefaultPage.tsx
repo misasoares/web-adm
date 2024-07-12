@@ -20,6 +20,10 @@ export default function DefaultPage({
 }: DefaultPageProps) {
 	const navigate = useNavigate();
 
+	function handleColorTitle(title: string) {
+		return title.split(':');
+	}
+
 	return (
 		<div className="p-32">
 			{isCreatePage && (
@@ -34,7 +38,14 @@ export default function DefaultPage({
 				elevation={4}
 				className="p-32 mb-32 flex justify-between"
 			>
-				<Typography variant="h4">{title}</Typography>
+				{isCreatePage && title.includes('Editar pedido de:') ? (
+					<Typography variant="h4">
+						{handleColorTitle(title)[0]}:
+						<span className="text-deep-purple-900 font-700">{handleColorTitle(title)[1]}</span>
+					</Typography>
+				) : (
+					<Typography variant="h4">{title}</Typography>
+				)}
 				{createButton && (
 					<Button
 						variant="contained"
