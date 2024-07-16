@@ -10,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { Controller, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from 'src/app/auth/AuthRouteProvider';
 import { z } from 'zod';
 
 /**
@@ -45,9 +46,17 @@ function ModernReversedSignInPage() {
 
 	const { isValid, dirtyFields, errors } = formState;
 
+	const { jwtService } = useAuth();
+
 	function onSubmit(data) {
-		reset(defaultValues);
-		navigate('/checks');
+		jwtService
+			.signIn(data)
+			.then(() => {
+				reset(defaultValues);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	}
 
 	return (
@@ -141,7 +150,7 @@ function ModernReversedSignInPage() {
 						</div>
 
 						<Typography className="mt-32 text-4xl font-extrabold leading-tight tracking-tight">
-							Login
+							Entrar
 						</Typography>
 						<div className="mt-2 flex items-baseline font-medium">
 							<Typography>Não tem uma conta?</Typography>

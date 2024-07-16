@@ -1,18 +1,18 @@
 /* eslint import/no-extraneous-dependencies: off */
+import _ from '@lodash';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootState } from 'app/store/store';
 import settingsConfig from 'app/configs/settingsConfig';
 import { User } from 'src/app/auth/user';
 import { PartialDeep } from 'type-fest';
-import _ from '@lodash';
-import { RootState } from 'app/store/store';
 import userModel from '../models/UserModel';
 
 function updateRedirectUrl(user: PartialDeep<User>) {
 	/*
     You can redirect the logged-in user to a specific route depending on his role
     */
-	if (user?.data?.loginRedirectUrl && user?.data?.loginRedirectUrl !== '') {
-		settingsConfig.loginRedirectUrl = user.data.loginRedirectUrl; // for example 'apps/academy'
+	if (user?.loginRedirectUrl && user?.loginRedirectUrl !== '') {
+		settingsConfig.loginRedirectUrl = user.loginRedirectUrl; // for example 'apps/academy'
 	}
 }
 
@@ -49,7 +49,7 @@ export const userSlice = createSlice({
 		 */
 		setUserShortcuts: (state, action) => {
 			const oldState = _.cloneDeep(state);
-			const newUser = _.setIn(oldState, 'data.shortcuts', action.payload) as User;
+			const newUser = _.setIn(oldState, 'shortcuts', action.payload) as User;
 
 			if (_.isEqual(oldState, newUser)) {
 				return undefined;
@@ -62,7 +62,7 @@ export const userSlice = createSlice({
 		 */
 		setUserSettings: (state, action) => {
 			const oldState = _.cloneDeep(state);
-			const newUser = _.setIn(oldState, 'data.settings', action.payload) as User;
+			const newUser = _.setIn(oldState, 'settings', action.payload) as User;
 
 			if (_.isEqual(oldState, newUser)) {
 				return undefined;
@@ -119,9 +119,9 @@ export const selectIsUserGuest = (state: RootState) => {
 	return !userRole || userRole?.length === 0;
 };
 
-export const selectUserShortcuts = (state: RootState) => state.user?.data?.shortcuts;
+export const selectUserShortcuts = (state: RootState) => state.user?.shortcuts;
 
-export const selectUserSettings = (state: RootState) => state.user?.data?.settings;
+export const selectUserSettings = (state: RootState) => state.user?.settings;
 
 export type userSliceType = typeof userSlice;
 

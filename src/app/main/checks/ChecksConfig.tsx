@@ -24,7 +24,7 @@ const ChecksConfig: FuseRouteConfigType = {
 			}
 		}
 	},
-	auth: authRoles.onlyGuest,
+	auth: authRoles.admin,
 	routes: [
 		{
 			path: 'checks',

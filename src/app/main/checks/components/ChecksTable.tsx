@@ -1,69 +1,3 @@
-// import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
-// import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-// import { useAppSelector } from 'app/store/hooks';
-
-// export default function ChecksTable() {
-// 	const checks = useAppSelector((state) => state.checks);
-
-// 	function formatDate(dateParam: Date) {
-// 		const date = new Date(dateParam);
-// 		const day = date.getDate();
-// 		const month = date.getMonth() + 1;
-// 		const year = date.getFullYear();
-
-// 		return `${day}/${month}/${year}`;
-// 	}
-
-// 	return (
-// 		<div className="p-32">
-// 			<Paper
-// 				elevation={4}
-// 				className="p-32 mt-32"
-// 			>
-// 				<TableContainer component={Paper}>
-// 					<Table
-// 						sx={{ minWidth: 650 }}
-// 						size="small"
-// 						aria-label="a dense table"
-// 					>
-// 						<TableHead>
-// 							<TableRow>
-// 								<TableCell>Pagador</TableCell>
-// 								<TableCell>Conta</TableCell>
-// 								<TableCell>Valor</TableCell>
-// 								<TableCell>Vencimento</TableCell>
-// 								<TableCell>Ações</TableCell>
-// 							</TableRow>
-// 						</TableHead>
-// 						<TableBody>
-// 							{checks.checks.map((row) => (
-// 								<TableRow
-// 									key={row.uid}
-// 									sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-// 								>
-// 									<TableCell>{row.payerName}</TableCell>
-// 									<TableCell
-// 										component="th"
-// 										scope="row"
-// 									>
-// 										{row.AccountBank.name}
-// 									</TableCell>
-// 									<TableCell>{row.value}</TableCell>
-// 									<TableCell>{formatDate(row.dueDate)}</TableCell>
-// 									<TableCell className="flex">
-// 										<FuseSvgIcon>heroicons-outline:pencil</FuseSvgIcon>
-// 										<FuseSvgIcon>heroicons-outline:eye</FuseSvgIcon>
-// 									</TableCell>
-// 								</TableRow>
-// 							))}
-// 						</TableBody>
-// 					</Table>
-// 				</TableContainer>
-// 			</Paper>
-// 		</div>
-// 	);
-// }
-
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import {
 	Button,
@@ -81,8 +15,14 @@ import { useAppSelector } from 'app/store/hooks';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ptBR } from 'date-fns/locale';
+import { ChecksType } from '../store/types/typesSlice';
 
-export default function ChecksTable() {
+interface ChecksTableProps {
+	editMode: (arg: boolean) => void;
+	rowToEdit: (row: ChecksType) => void;
+}
+
+export default function ChecksTable({ editMode, rowToEdit }: ChecksTableProps) {
 	const checks = useAppSelector((state) => state.checks);
 	const [filters, setFilters] = useState({
 		accountBankName: '',
@@ -109,6 +49,11 @@ export default function ChecksTable() {
 			String(row.value).toLowerCase().includes(filters.value.toLowerCase()) &&
 			row.checkNumber.toLowerCase().includes(filters.checkNumber.toLowerCase())
 		);
+	}
+
+	function handleValuesToEditCheck(row: ChecksType) {
+		editMode(true);
+		rowToEdit(row);
 	}
 
 	function clearFilters() {
@@ -197,27 +142,39 @@ export default function ChecksTable() {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{checks.checks.filter(applyFilters).map((row) => (
-								<TableRow
-									key={row.uid}
-									sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-								>
-									<TableCell>{row.payerName}</TableCell>
-									<TableCell
-										component="th"
-										scope="row"
+							{Array.isArray(checks.checks) &&
+								checks.checks.filter(applyFilters).map((row) => (
+									<TableRow
+										key={row.uid}
+										sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 									>
-										{row.AccountBank.name}
-									</TableCell>
-									<TableCell>{row.checkNumber}</TableCell>
-									<TableCell>{row.value}</TableCell>
-									<TableCell>{formatDate(row.dueDate)}</TableCell>
-									<TableCell className="flex">
-										<FuseSvgIcon>heroicons-outline:pencil</FuseSvgIcon>
-										<FuseSvgIcon>heroicons-outline:eye</FuseSvgIcon>
-									</TableCell>
-								</TableRow>
-							))}
+										<TableCell>{row.payerName}</TableCell>
+										<TableCell
+											component="th"
+											scope="row"
+										>
+											{row.AccountBank.name}
+										</TableCell>
+										<TableCell>{row.checkNumber}</TableCell>
+										<TableCell>{row.value}</TableCell>
+										<TableCell>{formatDate(row.dueDate)}</TableCell>
+										<TableCell className="flex">
+											<FuseSvgIcon
+												className="cursor-pointer"
+												color="primary"
+												onClick={() => handleValuesToEditCheck(row)}
+											>
+												heroicons-outline:pencil
+											</FuseSvgIcon>
+											<FuseSvgIcon
+												className="cursor-pointer"
+												color="primary"
+											>
+												heroicons-outline:eye
+											</FuseSvgIcon>
+										</TableCell>
+									</TableRow>
+								))}
 						</TableBody>
 					</Table>
 				</TableContainer>

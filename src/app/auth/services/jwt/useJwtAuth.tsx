@@ -3,14 +3,15 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import _ from '@lodash';
 import { PartialDeep } from 'type-fest';
+import { endpoints } from 'src/app/shared/services/endpoints';
 
 const defaultAuthConfig = {
 	tokenStorageKey: 'jwt_access_token',
-	signInUrl: 'api/auth/sign-in',
-	signUpUrl: 'api/auth/sign-up',
-	tokenRefreshUrl: 'api/auth/refresh',
-	getUserUrl: 'api/auth/user',
-	updateUserUrl: 'api/auth/user',
+	signInUrl: '/login',
+	signUpUrl: '/sign-up',
+	tokenRefreshUrl: '/auth/refresh',
+	getUserUrl: '/auth/user',
+	updateUserUrl: '/auth/user',
 	updateTokenFromHeader: false
 };
 
@@ -66,6 +67,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	const authConfig = _.defaults(config, defaultAuthConfig);
 
 	const [user, setUser] = useState<User>(null);
+
 	const [isLoading, setIsLoading] = useState(true);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -74,13 +76,13 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 */
 	const setSession = useCallback((accessToken: string) => {
 		if (accessToken) {
-			localStorage.setItem(authConfig.tokenStorageKey, accessToken);
+			localStorage.setItem('jwt_access_token', accessToken);
 			axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 		}
 	}, []);
 
 	const resetSession = useCallback(() => {
-		localStorage.removeItem(authConfig.tokenStorageKey);
+		localStorage.removeItem('jwt_access_token');
 		delete axios.defaults.headers.common.Authorization;
 	}, []);
 
@@ -88,7 +90,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 * Get access token from local storage
 	 */
 	const getAccessToken = useCallback(() => {
-		return localStorage.getItem(authConfig.tokenStorageKey);
+		return localStorage.getItem('jwt_access_token');
 	}, []);
 
 	/**
@@ -156,6 +158,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 			try {
 				const decoded = jwtDecode<JwtPayload>(accessToken);
 				const currentTime = Date.now() / 1000;
+
 				return decoded.exp > currentTime;
 			} catch (error) {
 				return false;
@@ -178,13 +181,18 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 				try {
 					setIsLoading(true);
 
-					const response: AxiosResponse<User> = await axios.get(authConfig.getUserUrl, {
-						headers: { Authorization: `Bearer ${accessToken}` }
-					});
+					const response: AxiosResponse<User> = await axios.get(
+						`${import.meta.env.VITE_API_KEY}/access-token`,
+						{
+							headers: { Authorization: `Bearer ${accessToken}` }
+						}
+					);
 
-					const userData = response?.data;
+					const userData = response?.data.data.user;
+					const token = response?.data.data.access_token;
 
-					handleSignInSuccess(userData, accessToken);
+					//ajustar role na api
+					handleSignInSuccess({ ...userData, role: ['admin'] }, token);
 
 					return true;
 				} catch (error) {
@@ -218,14 +226,23 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 * Sign in
 	 */
 	const signIn = async (credentials: SignInPayload) => {
-		const response = axios.post(authConfig.signInUrl, credentials);
+		const response = axios.post(import.meta.env.VITE_API_KEY + endpoints.login, credentials);
 
 		response.then(
-			(res: AxiosResponse<{ user: User; access_token: string }>) => {
-				const userData = res?.data?.user;
-				const accessToken = res?.data?.access_token;
+			(res: AxiosResponse<{ data: { user: User; access_token: string } }>) => {
+				const userData = res?.data?.data.user;
+				const accessToken = res?.data?.data.access_token;
 
-				handleSignInSuccess(userData, accessToken);
+				handleSignInSuccess(
+					{
+						uid: userData.uid,
+						role: userData.roles,
+						email: userData.email,
+						displayName: userData.displayName,
+						loginRedirectUrl: 'internal-order'
+					},
+					accessToken
+				);
 
 				return userData;
 			},
@@ -245,7 +262,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 * Sign up
 	 */
 	const signUp = useCallback((data: SignUpPayload) => {
-		const response = axios.post(authConfig.signUpUrl, data);
+		const response = axios.post(import.meta.env.VITE_API_KEY + endpoints.signup, data);
 
 		response.then(
 			(res: AxiosResponse<{ user: User; access_token: string }>) => {

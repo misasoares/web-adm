@@ -6,6 +6,7 @@ export interface AccountBank {
 export interface Bank {
 	accNumber: string;
 	agencyNumber: string;
+	cpfOrCnpj: string;
 	name: string;
 	uid: string;
 }

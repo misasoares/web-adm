@@ -1,16 +1,16 @@
-import { styled, useTheme } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import { red } from '@mui/material/colors';
-import { memo, useEffect, useState } from 'react';
-import { useSwipeable } from 'react-swipeable';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { usePrevious } from '@fuse/hooks';
 import _ from '@lodash';
+import Button from '@mui/material/Button';
+import { red } from '@mui/material/colors';
+import { styled, useTheme } from '@mui/material/styles';
+import { useAppSelector } from 'app/store/hooks';
 import SettingsPanel from 'app/theme-layouts/shared-components/configurator/SettingsPanel';
 import ThemesPanel from 'app/theme-layouts/shared-components/configurator/ThemesPanel';
-import { useAppSelector } from 'app/store/hooks';
-import { selectIsUserGuest, selectUserSettings } from '../../../auth/user/store/userSlice';
+import { memo, useEffect, useState } from 'react';
+import { useSwipeable } from 'react-swipeable';
 import { useAuth } from '../../../auth/AuthRouteProvider';
+import { selectIsUserGuest } from '../../../auth/user/store/userSlice';
 
 const Root = styled('div')(({ theme }) => ({
 	position: 'absolute',
@@ -57,7 +57,7 @@ function Configurator() {
 	const theme = useTheme();
 	const [open, setOpen] = useState('');
 	const isUserGuest = useAppSelector(selectIsUserGuest);
-	const userSettings = useAppSelector(selectUserSettings);
+	//const userSettings = useAppSelector(selectUserSettings);
 	const prevUserSettings = usePrevious(userSettings);
 
 	const { updateUser } = useAuth();
