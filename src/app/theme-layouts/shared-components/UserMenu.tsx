@@ -45,7 +45,7 @@ function UserMenu() {
 						component="span"
 						className="flex font-semibold"
 					>
-						{user.data.displayName}
+						{user.displayName}
 					</Typography>
 					<Typography
 						className="text-11 font-medium capitalize"
@@ -56,7 +56,7 @@ function UserMenu() {
 					</Typography>
 				</div>
 
-				{user.data.photoURL ? (
+				{user.photoURL ? (
 					<Avatar
 						sx={{
 							background: (theme) => theme.palette.background.default,
@@ -64,7 +64,7 @@ function UserMenu() {
 						}}
 						className="md:mx-4"
 						alt="user photo"
-						src={user.data.photoURL}
+						src={user.photoURL}
 					/>
 				) : (
 					<Avatar
@@ -74,7 +74,7 @@ function UserMenu() {
 						}}
 						className="md:mx-4"
 					>
-						{user?.data?.displayName?.[0]}
+						{user?.displayName?.[0]}
 					</Avatar>
 				)}
 			</Button>

@@ -19,7 +19,7 @@ import {
 	createOrderSchema,
 	defaultValues
 } from './formSchema';
-import { createInternalOrder } from './store/internalOrderSlice';
+import { createInternalOrder, updateInternalOrder } from './store/internalOrderSlice';
 import { InternalOrderType } from './store/types/typesSlice';
 
 interface IPropsOrderPage {
@@ -117,7 +117,10 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 		}
 
 		if (editMode) {
-			//não pode submeter caso status ja esteja em concluido.
+			if (orderToEdit) {
+				dispatch(updateInternalOrder({ ...submitData, uid: orderToEdit.uid }));
+				dispatch(showMessage({ message: 'Pedido atualizado com sucesso.', variant: 'success' }));
+			}
 		}
 	}
 
@@ -188,6 +191,10 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 	}, [watch]);
 
 	useEffect(() => {
+		setValue('totalValue', totalValueOrder);
+	}, [totalValueOrder]);
+
+	useEffect(() => {
 		if (!editMode) {
 			const orderNumber = generateOrderNumber();
 			setValue('orderNumber', orderNumber);
@@ -195,15 +202,15 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 		if (editMode && orderToEdit) {
 			const formattedOrder = {
 				...orderToEdit,
-
 				date: orderToEdit.createdAt, //ajustar
-
 				costumerName: orderToEdit.costumer.name,
 				phone: orderToEdit.costumer.phone,
 				address: orderToEdit.costumer.address,
-				cpfOrCnpj: orderToEdit.costumer.cpfOrCnpj
-				//falta ajustar produtos
+				cpfOrCnpj: orderToEdit.costumer.cpfOrCnpj,
+				totalValue: Number(orderToEdit.totalValue)
+				// falta ajustar produtos
 			};
+
 			reset(formattedOrder);
 
 			setDisablePrint(false);
@@ -226,7 +233,7 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 								key={item}
 								control={
 									<Checkbox
-										color="primary"
+										color={statusValues[item] === 'Concluído' ? 'success' : 'primary'}
 										onChange={() => setValue('status', item as EInternalOrderStatus)}
 										checked={statusValues[item] === statusValues[watch('status')]}
 									/>

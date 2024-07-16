@@ -1,3 +1,5 @@
+import { EInternalOrderStatus } from '../../formSchema';
+
 export interface ProductsOrderType {
 	uid: string;
 	quantity: number;
@@ -19,7 +21,7 @@ export interface InternalOrderType {
 	uid: string;
 	type: string;
 	costumer: ICostumer;
-	status: string;
+	status: EInternalOrderStatus;
 	vehicles: string;
 	totalValue: number;
 	products: ProductsOrderType[];

@@ -24,6 +24,7 @@ const navigationConfig: FuseNavItemType[] = [
 				title: 'Cheques',
 				type: 'item',
 				icon: 'heroicons-outline:cash',
+				auth: ['admin'],
 				url: '/checks'
 			},
 			{
@@ -31,6 +32,7 @@ const navigationConfig: FuseNavItemType[] = [
 				title: 'Pedidos',
 				type: 'item',
 				icon: 'heroicons-outline:clipboard-list',
+				auth: ['admin', 'employees'],
 				url: '/internal-order'
 			}
 		]

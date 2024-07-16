@@ -56,7 +56,7 @@ function AuthRouteProvider(props: AuthProviderProps) {
 			updateTokenFromHeader: true
 		},
 		onSignedIn: (user: User) => {
-			dispatch(setUser({ ...user, role: ['admin'] }));
+			dispatch(setUser(user));
 			setAuthService('jwt');
 		},
 		onSignedUp: (user: User) => {

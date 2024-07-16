@@ -25,7 +25,7 @@ const InternalOrderConfig: FuseRouteConfigType = {
 			}
 		}
 	},
-	auth: authRoles.admin,
+	auth: authRoles.staff,
 	routes: [
 		{
 			path: 'internal-order/:uid',

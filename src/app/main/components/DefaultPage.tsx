@@ -41,7 +41,7 @@ export default function DefaultPage({
 				{isCreatePage && title.includes('Editar pedido de:') ? (
 					<Typography variant="h4">
 						{handleColorTitle(title)[0]}:
-						<span className="text-deep-purple-900 font-700">{handleColorTitle(title)[1]}</span>
+						<span className="text-deep-purple-900 font-700 underline">{handleColorTitle(title)[1]}</span>
 					</Typography>
 				) : (
 					<Typography variant="h4">{title}</Typography>

@@ -53,7 +53,6 @@ function ModernReversedSignInPage() {
 			.signIn(data)
 			.then(() => {
 				reset(defaultValues);
-				navigate('/checks');
 			})
 			.catch((err) => {
 				console.log(err);
