@@ -226,7 +226,6 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 */
 	const signIn = async (credentials: SignInPayload) => {
 		const response = axios.post(import.meta.env.VITE_API_KEY + endpoints.login, credentials);
-
 		response.then(
 			(res: AxiosResponse<{ data: { user: User; access_token: string } }>) => {
 				const userData = res?.data?.data.user;
