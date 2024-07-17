@@ -191,8 +191,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 					const userData = response?.data.data.user;
 					const token = response?.data.data.access_token;
 
-					//ajustar role na api
-					handleSignInSuccess({ ...userData, role: ['admin'] }, token);
+					handleSignInSuccess(userData, token);
 
 					return true;
 				} catch (error) {
@@ -227,7 +226,6 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 */
 	const signIn = async (credentials: SignInPayload) => {
 		const response = axios.post(import.meta.env.VITE_API_KEY + endpoints.login, credentials);
-
 		response.then(
 			(res: AxiosResponse<{ data: { user: User; access_token: string } }>) => {
 				const userData = res?.data?.data.user;

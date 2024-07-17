@@ -11,17 +11,14 @@ import { SignUpPayload, useAuth } from '../../../auth/AuthRouteProvider';
  */
 const schema = z
 	.object({
-		displayName: z.string().nonempty('You must enter your name'),
-		email: z.string().email('You must enter a valid email').nonempty('You must enter an email'),
-		password: z
-			.string()
-			.nonempty('Please enter your password.')
-			.min(8, 'Password is too short - should be 8 chars minimum.'),
-		passwordConfirm: z.string().nonempty('Password confirmation is required')
+		displayName: z.string().min(1, 'Você deve digitar seu nome.'),
+		email: z.string().email('Você deve digitar um email válido.').min(4, 'É necessário adicionar um email.'),
+		password: z.string().min(8, 'Senha muito curta - Deve ter ao menos 8 caracteres.'),
+		passwordConfirm: z.string().min(4, 'É necessário confirmar a senha.')
 		// acceptTermsConditions: z.boolean().refine((val) => val === true, 'The terms and conditions must be accepted.')
 	})
 	.refine((data) => data.password === data.passwordConfirm, {
-		message: 'Passwords must match',
+		message: 'As senhas não coincidem. Por favor, digite novamente.',
 		path: ['passwordConfirm']
 	});
 
@@ -173,7 +170,7 @@ function JwtSignUpTab() {
 				type="submit"
 				size="large"
 			>
-				Create your free account
+				Criar conta
 			</Button>
 		</form>
 	);

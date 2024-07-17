@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import Box from '@mui/material/Box';
+import logoms from 'src/assets/images/logo-ms-adm.png';
 
 /**
  * The FuseSplashScreen component is responsible for rendering a splash screen with a logo and a loading spinner.
@@ -12,7 +13,7 @@ function FuseSplashScreen() {
 			<div className="logo">
 				<img
 					width="128"
-					src="assets/images/logo/logo.svg"
+					src={logoms}
 					alt="logo"
 				/>
 			</div>

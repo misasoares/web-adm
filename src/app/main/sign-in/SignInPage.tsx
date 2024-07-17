@@ -2,9 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import _ from '@lodash';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -206,7 +203,7 @@ function ModernReversedSignInPage() {
 							/>
 
 							<div className="flex flex-col items-center justify-center sm:flex-row sm:justify-between">
-								<Controller
+								{/* <Controller
 									name="remember"
 									control={control}
 									render={({ field }) => (
@@ -222,14 +219,14 @@ function ModernReversedSignInPage() {
 											/>
 										</FormControl>
 									)}
-								/>
+								/> */}
 
-								<Link
+								{/* <Link
 									className="text-md font-medium"
 									to="/pages/auth/forgot-password"
 								>
 									Esqueceu a senha?
-								</Link>
+								</Link> */}
 							</div>
 
 							<Button
