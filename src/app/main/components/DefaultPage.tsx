@@ -36,7 +36,7 @@ export default function DefaultPage({
 			)}
 			<Paper
 				elevation={4}
-				className="p-32 mb-32 flex justify-between"
+				className="p-32 mb-32 flex-col sm:flex sm:flex-row sm:justify-between "
 			>
 				{isCreatePage && title.includes('Editar pedido de:') ? (
 					<Typography variant="h4">
@@ -47,14 +47,16 @@ export default function DefaultPage({
 					<Typography variant="h4">{title}</Typography>
 				)}
 				{createButton && (
-					<Button
-						variant="contained"
-						onClick={() => navigate('new')}
-						color="primary"
-						startIcon={<FuseSvgIcon color="inherit">heroicons-outline:plus</FuseSvgIcon>}
-					>
-						{createButton}
-					</Button>
+					<div className="w-full flex justify-end items-center ">
+						<Button
+							variant="contained"
+							onClick={() => navigate('new')}
+							color="primary"
+							startIcon={<FuseSvgIcon color="inherit">heroicons-outline:plus</FuseSvgIcon>}
+						>
+							{createButton}
+						</Button>
+					</div>
 				)}
 			</Paper>
 
