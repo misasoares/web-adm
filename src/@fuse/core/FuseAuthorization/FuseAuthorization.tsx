@@ -103,6 +103,7 @@ class FuseAuthorization extends Component<FuseAuthorizationProps, State> {
 
 	redirectRoute() {
 		const { userRole, loginRedirectUrl = '/' } = this.props;
+
 		const redirectUrl = getSessionRedirectUrl() || loginRedirectUrl;
 
 		/*

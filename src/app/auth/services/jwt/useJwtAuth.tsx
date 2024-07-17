@@ -191,8 +191,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 					const userData = response?.data.data.user;
 					const token = response?.data.data.access_token;
 
-					//ajustar role na api
-					handleSignInSuccess({ ...userData, role: ['admin'] }, token);
+					handleSignInSuccess(userData, token);
 
 					return true;
 				} catch (error) {
