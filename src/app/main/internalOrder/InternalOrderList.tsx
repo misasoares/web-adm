@@ -13,7 +13,7 @@ export default function InternalOrderList() {
 
 	return (
 		<DefaultPage
-			title="Listagem de pedidos"
+			title="Lista de pedidos"
 			createButton="Novo pedido"
 		>
 			<TableToList />

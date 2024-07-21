@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import FuseSplashScreen from '@fuse/core/FuseSplashScreen/FuseSplashScreen';
 import { resetUser, selectUser, selectUserRole, setUser, updateUser } from 'src/app/auth/user/store/userSlice';
 import BrowserRouter from '@fuse/core/BrowserRouter';
+import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
 import { PartialDeep } from 'type-fest';
 import _ from '@lodash';
 import useJwtAuth, { JwtAuth } from './services/jwt/useJwtAuth';
@@ -73,6 +74,12 @@ function AuthRouteProvider(props: AuthProviderProps) {
 		onError: (error) => {
 			// eslint-disable-next-line no-console
 			console.warn(error);
+			dispatch(
+				showMessage({
+					message: 'Algo deu errado, verifique as credenciais e tente novamente.',
+					variant: 'error'
+				})
+			);
 		}
 	});
 
