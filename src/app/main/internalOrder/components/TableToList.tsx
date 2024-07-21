@@ -1,10 +1,22 @@
+import { ChangeEvent, useState } from 'react';
+import { useNavigate } from 'react-router';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
-import { Chip, Stack, TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Paper } from '@mui/material';
-import { formatterNumeral } from 'src/app/utils/formatterNumeral';
+import {
+	Chip,
+	Stack,
+	TableRow,
+	TableHead,
+	TableContainer,
+	TableCell,
+	TableBody,
+	Table,
+	Paper,
+	TablePagination
+} from '@mui/material';
 import { useAppSelector } from 'app/store/hooks';
+import { formatterNumeral } from 'src/app/utils/formatterNumeral';
 import { selectInternalOrder } from '../store/internalOrderSlice';
 import { EInternalOrderStatus, EInternalOrderType } from '../formSchema';
-import { useNavigate } from 'react-router';
 
 const typeColorMap: Record<
 	EInternalOrderType,
@@ -37,8 +49,25 @@ export default function TableToList() {
 	const internalOrder = useAppSelector(selectInternalOrder);
 	const navigate = useNavigate();
 
+	const [page, setPage] = useState(0);
+	const [rowsPerPage, setRowsPerPage] = useState(5);
+
+	const paginatedData = internalOrder.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
+	const handleChangePage = (event: unknown, newPage: number) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
+
 	return (
-		<TableContainer component={Paper}>
+		<TableContainer
+			component={Paper}
+			elevation={6}
+		>
 			<Table
 				sx={{ minWidth: 650 }}
 				aria-label="simple table"
@@ -53,8 +82,8 @@ export default function TableToList() {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{Array.isArray(internalOrder) &&
-						internalOrder.map((row) => (
+					{Array.isArray(paginatedData) &&
+						paginatedData.map((row) => (
 							<TableRow
 								key={row.uid}
 								sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -103,6 +132,16 @@ export default function TableToList() {
 						))}
 				</TableBody>
 			</Table>
+			<TablePagination
+				rowsPerPageOptions={[5, 10, 25]}
+				component="div"
+				count={internalOrder.length}
+				rowsPerPage={rowsPerPage}
+				page={page}
+				onPageChange={handleChangePage}
+				onRowsPerPageChange={handleChangeRowsPerPage}
+				labelRowsPerPage="Linhas por página"
+			/>
 		</TableContainer>
 	);
 }

@@ -1,9 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
 import _ from '@lodash';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useNavigate } from 'react-router';
+import { useAppDispatch } from 'app/store/hooks';
 import { SignUpPayload, useAuth } from '../../../auth/AuthRouteProvider';
 
 /**
@@ -32,6 +35,8 @@ const defaultValues = {
 
 function JwtSignUpTab() {
 	const { jwtService } = useAuth();
+	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
 
 	const { control, formState, handleSubmit, setError } = useForm({
 		mode: 'onChange',
@@ -50,7 +55,8 @@ function JwtSignUpTab() {
 				email
 			})
 			.then(() => {
-				// No need to do anything, registered user data will be set at app/auth/AuthRouteProvider
+				navigate('/sign-in');
+				dispatch(showMessage({ message: 'Usuário cadastrado com sucesso.', variant: 'success' }));
 			})
 			.catch((_errors: { type: 'email' | 'password' | `root.${string}` | 'root'; message: string }[]) => {
 				_errors.forEach(({ message, type }) => {

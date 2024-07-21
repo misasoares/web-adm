@@ -35,6 +35,7 @@ const inputGlobalStyles = (
         borderRadius: 2,
         lineHeight: 1.7,
       }, */
+
 			'table.simple tbody tr th': {
 				borderColor: theme.palette.divider
 			},
@@ -78,6 +79,9 @@ const inputGlobalStyles = (
 				boxShadow: `inset 0 0 0 20px ${
 					theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.37)' : 'rgba(255, 255, 255, 0.37)'
 				}`
+			},
+			'.muiltr-bni3t0-MuiSelect-select-MuiInputBase-input.MuiSelect-select': {
+				minHeight: '0!important'
 			}
 		})}
 	/>

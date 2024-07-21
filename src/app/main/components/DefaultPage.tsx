@@ -39,15 +39,23 @@ export default function DefaultPage({
 				className="p-32 mb-32 flex-col sm:flex sm:flex-row sm:justify-between "
 			>
 				{isCreatePage && title.includes('Editar pedido de:') ? (
-					<Typography variant="h4">
+					<Typography
+						variant="h4"
+						className="w-full "
+					>
 						{handleColorTitle(title)[0]}:
 						<span className="text-deep-purple-900 font-700 underline">{handleColorTitle(title)[1]}</span>
 					</Typography>
 				) : (
-					<Typography variant="h4">{title}</Typography>
+					<Typography
+						variant="h4"
+						className="w-full text-28 mb-14 sm:mb-0 sm:text-32"
+					>
+						{title}
+					</Typography>
 				)}
 				{createButton && (
-					<div className="w-full flex justify-end items-center ">
+					<div className="w-full sm:w-1/3 flex justify-end items-center ">
 						<Button
 							variant="contained"
 							onClick={() => navigate('new')}
