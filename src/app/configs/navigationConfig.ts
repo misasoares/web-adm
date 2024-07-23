@@ -34,6 +34,14 @@ const navigationConfig: FuseNavItemType[] = [
 				icon: 'heroicons-outline:clipboard-list',
 				auth: ['admin', 'employees'],
 				url: '/internal-order'
+			},
+			{
+				id: 'apps.customers',
+				title: 'Clientes',
+				type: 'item',
+				icon: 'heroicons-outline:user-group',
+				auth: ['admin'],
+				url: '/customers'
 			}
 		]
 	}
