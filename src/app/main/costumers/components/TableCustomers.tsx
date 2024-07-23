@@ -1,4 +1,5 @@
-import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { format } from 'date-fns';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -9,19 +10,38 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
+import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { useAppDispatch } from 'app/store/hooks';
+import TextField from '@mui/material/TextField';
+import TablePagination from '@mui/material/TablePagination';
 import { ICustomers } from '../store/customersSlice';
+import { getInternalOrder } from '../../internalOrder/store/internalOrderSlice';
 
 interface RowProps {
 	customer: ICustomers;
 }
 
 function Row({ customer }: RowProps) {
-	const [open, setOpen] = React.useState(false);
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+	const [open, setOpen] = useState(false);
+
+	function handleNavigateToEdit(uid: string) {
+		navigate(`/customers/${uid}`);
+	}
+
+	function handleNavigateToInternalOrder(internalOrderUid: string) {
+		navigate(`/internal-order/${internalOrderUid}`);
+	}
+
+	useEffect(() => {
+		dispatch(getInternalOrder());
+	}, [dispatch]);
 
 	return (
 		<>
@@ -47,6 +67,15 @@ function Row({ customer }: RowProps) {
 					{customer.name}
 				</TableCell>
 				<TableCell align="right">{customer.phone}</TableCell>
+				<TableCell className="flex justify-end">
+					<FuseSvgIcon
+						color="primary"
+						className="cursor-pointer"
+						onClick={() => handleNavigateToEdit(customer.uid)}
+					>
+						heroicons-outline:pencil
+					</FuseSvgIcon>
+				</TableCell>
 			</TableRow>
 			<TableRow>
 				<TableCell
@@ -65,7 +94,7 @@ function Row({ customer }: RowProps) {
 								gutterBottom
 								component="div"
 							>
-								Histórico de {customer.name}
+								Histórico de pedidos de {customer.name}
 							</Typography>
 							<Typography>Total de pedidos: {customer.internalOrder.length}</Typography>
 							<Table
@@ -83,12 +112,16 @@ function Row({ customer }: RowProps) {
 								)}
 								<TableBody>
 									{customer.internalOrder.map((internalOrder) => (
-										<TableRow key={internalOrder.uid}>
+										<TableRow
+											key={internalOrder.uid}
+											className="cursor-pointer"
+											onClick={() => handleNavigateToInternalOrder(internalOrder.uid)}
+										>
 											<TableCell
 												component="th"
 												scope="row"
 											>
-												{format(new Date(customer.createdAt), 'dd-MM-yyy')}
+												{format(new Date(customer.createdAt), 'dd/MM/yyyy')}
 											</TableCell>
 											<TableCell>
 												{internalOrder.productsInternalOrder
@@ -116,25 +149,66 @@ interface PropsTableCustomer {
 }
 
 export default function TableCustomer({ customer }: PropsTableCustomer) {
+	const [searchTerm, setSearchTerm] = useState('');
+	const [filteredCustomers, setFilteredCustomers] = useState(customer);
+	const [page, setPage] = useState(0);
+	const [rowsPerPage, setRowsPerPage] = useState(10);
+
+	useEffect(() => {
+		setFilteredCustomers(customer.filter((cust) => cust.name.toLowerCase().includes(searchTerm.toLowerCase())));
+	}, [searchTerm, customer]);
+
+	const handleChangePage = (event: unknown, newPage: number) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
+
 	return (
-		<TableContainer component={Paper}>
-			<Table aria-label="collapsible table">
-				<TableHead>
-					<TableRow>
-						<TableCell />
-						<TableCell>Nome</TableCell>
-						<TableCell align="right">Telefone</TableCell>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{customer.map((row) => (
-						<Row
-							key={row.name}
-							customer={row}
-						/>
-					))}
-				</TableBody>
-			</Table>
-		</TableContainer>
+		<>
+			<TextField
+				label="Pesquisar Cliente"
+				variant="outlined"
+				className="w-2/6"
+				margin="normal"
+				value={searchTerm}
+				onChange={(e) => setSearchTerm(e.target.value)}
+			/>
+			<TableContainer
+				component={Paper}
+				elevation={5}
+			>
+				<Table aria-label="collapsible table">
+					<TableHead>
+						<TableRow>
+							<TableCell />
+							<TableCell>Nome</TableCell>
+							<TableCell align="right">Telefone</TableCell>
+							<TableCell align="right">Ações</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{filteredCustomers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+							<Row
+								key={row.uid}
+								customer={row}
+							/>
+						))}
+					</TableBody>
+				</Table>
+				<TablePagination
+					rowsPerPageOptions={[5, 10, 25]}
+					component="div"
+					count={filteredCustomers.length}
+					rowsPerPage={rowsPerPage}
+					page={page}
+					onPageChange={handleChangePage}
+					onRowsPerPageChange={handleChangeRowsPerPage}
+				/>
+			</TableContainer>
+		</>
 	);
 }

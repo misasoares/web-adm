@@ -3,6 +3,7 @@ import { authRoles } from 'src/app/auth';
 import { lazy } from 'react';
 
 const CustomerPage = lazy(() => import('./CustomerPage'));
+const CreateCustomerPage = lazy(() => import('./create/CreateCustomerPage'));
 
 const CustomerPageConfig: FuseRouteConfigType = {
 	settings: {
@@ -31,6 +32,10 @@ const CustomerPageConfig: FuseRouteConfigType = {
 		{
 			path: 'customers',
 			element: <CustomerPage />
+		},
+		{
+			path: 'customers/:customerUid',
+			element: <CreateCustomerPage />
 		}
 	]
 };

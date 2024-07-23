@@ -46,6 +46,16 @@ export const getCustomers = createAsyncThunk('customers/get', async () => {
 	return [];
 });
 
+export const createCustomer = createAsyncThunk('customer/create', async (data) => {
+	console.log(data);
+	const res = await httpClient.doPost<ICustomers>('customers', data);
+
+	if (res.success) {
+		return res.data;
+	}
+	return {};
+});
+
 const initialState: ICustomerSlice = {
 	loading: false,
 	customers: []

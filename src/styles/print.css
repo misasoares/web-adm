@@ -28,10 +28,10 @@
 
 	.print-container {
 		position: absolute;
-		left: 0;
-		top: 0; /* Para garantir que o conteúdo impresso seja posicionado corretamente */
-		padding: 100px;
-		margin-top: 200px;
+		top: 0px;
+		left: 0px;
+		display: flex;
+		gap: 10px;
 	}
 	/* Page breaks */
 	.page-break-after {
