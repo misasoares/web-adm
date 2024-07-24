@@ -25,6 +25,7 @@ export interface InternalOrderType {
 	vehicles: string;
 	totalValue: number;
 	products: ProductsOrderType[];
+	createdAt: Date;
 }
 
 export interface InternalOrderSliceType {

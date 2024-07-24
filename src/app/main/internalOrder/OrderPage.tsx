@@ -131,10 +131,10 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 			const printContainer = document.createElement('div');
 			printContainer.className = 'print-container';
 
-			const clonedContent = printRef.current.cloneNode(true) as HTMLElement;
+			const clonedContent1 = printRef.current.cloneNode(true) as HTMLElement;
 
-			const inputs = clonedContent.querySelectorAll('input, textarea');
-			inputs.forEach((input) => {
+			const inputs1 = clonedContent1.querySelectorAll('input, textarea');
+			inputs1.forEach((input) => {
 				if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
 					const { value } = input;
 					const span = document.createElement('span');
@@ -143,7 +143,7 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 				}
 			});
 
-			printContainer.innerHTML = clonedContent.innerHTML;
+			printContainer.innerHTML = clonedContent1.innerHTML;
 
 			document.body.appendChild(printContainer);
 			window.print();
@@ -202,7 +202,7 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 		if (editMode && orderToEdit) {
 			const formattedOrder = {
 				...orderToEdit,
-				date: orderToEdit.createdAt, //ajustar
+				date: orderToEdit.createdAt.toString(), //ajustar
 				costumerName: orderToEdit.costumer.name,
 				phone: orderToEdit.costumer.phone,
 				address: orderToEdit.costumer.address,
@@ -244,7 +244,7 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 					</FormGroup>
 				)}
 				<div ref={printRef}>
-					<div className="border-black border-1 flex-col p-24">
+					<div className="border-black border-1 flex-col p-24 order">
 						<Typography
 							sx={{ marginTop: '-15px' }}
 							fontWeight={700}
@@ -305,10 +305,18 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 							</FormGroup>
 						</div>
 						<Divider className="b-10" />
-						<div className="flex w-full justify-end mt-10">
-							<Typography>
-								Parobé, {today.getDate()} de {getMonthName(today.getMonth())}, de {today.getFullYear()}
-							</Typography>
+						<div className="flex flex-row justify-end mb-24">
+							{!editMode ? (
+								<Typography fontWeight={700}>
+									{today.getDate()} de {getMonthName(today.getMonth())} de {today.getFullYear()}
+								</Typography>
+							) : (
+								<Typography fontWeight={700}>
+									{new Date(watch('date')).getDate()} de{' '}
+									{getMonthName(new Date(watch('date')).getMonth())} de{' '}
+									{new Date(watch('date')).getFullYear()}
+								</Typography>
+							)}
 						</div>
 
 						<CostumerInfo
