@@ -4,6 +4,7 @@ export interface ProductsOrderType {
 	uid: string;
 	quantity: number;
 	description: string;
+	discount: number;
 	unityValue: number;
 	total: number;
 	internalOrderUid: string;
