@@ -13,7 +13,7 @@ export const createInternalOrder = createAsyncThunk('internalOrder/create', asyn
 });
 
 export const updateInternalOrder = createAsyncThunk('internalOrder/update', async (data: any) => {
-	const res = await httpClient.doPut(`/internal-order`, data);
+	const res = await httpClient.doPut<InternalOrderType>(`/internal-order`, data);
 
 	if (res.success) {
 		return res.data;

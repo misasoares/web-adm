@@ -37,8 +37,6 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 		budget: false
 	});
 
-	const [totalValueOrder, setTotalValueOrder] = useState(0);
-
 	const {
 		setValue,
 		control,
@@ -57,6 +55,9 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 		control,
 		name: 'products'
 	});
+
+	const [productsState, setProductsState] = useState(watch('products'));
+	const [totalValueOrder, setTotalValueOrder] = useState(0);
 
 	const [disablePrint, setDisablePrint] = useState(true);
 
@@ -180,9 +181,16 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 
 		const subscription = watch((value) => {
 			totalOfOrder = value.products.reduce((acc, product) => {
-				const totalByProduct = +product.quantity * +product.unityValue;
+				const totalByProduct = +product.quantity * (+product.unityValue - (+product.discount || 0));
 				return acc + totalByProduct;
 			}, 0);
+
+			const productsUpdated = value.products.map((product) => ({
+				...product,
+				total: `${+product.quantity * (+product.unityValue - (+product.discount || 0))}`
+			}));
+
+			setProductsState(productsUpdated);
 
 			setTotalValueOrder(totalOfOrder);
 		});
@@ -192,6 +200,10 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 
 	useEffect(() => {
 		setValue('totalValue', totalValueOrder);
+
+		watch('products').forEach((product, index) => {
+			setValue(`products.${index}.total`, productsState[index].total);
+		});
 	}, [totalValueOrder]);
 
 	useEffect(() => {
@@ -330,6 +342,8 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 								fields={fields}
 								append={append}
 								handleRemoveProduct={handleRemoveProduct}
+								editMode={editMode}
+								watch={watch}
 							/>
 						</div>
 

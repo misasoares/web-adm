@@ -4,6 +4,7 @@ export enum EInternalOrderStatus {
 	IN_PROGRESS = 'IN_PROGRESS',
 	CONCLUDED = 'CONCLUDED'
 }
+
 export enum EInternalOrderType {
 	BUDGET = 'BUDGET',
 	ORDER = 'ORDER',
@@ -21,10 +22,11 @@ export const createOrderSchema = z.object({
 	status: z.nativeEnum(EInternalOrderStatus).optional(),
 	products: z.array(
 		z.object({
-			quantity: z.string(),
+			quantity: z.number(),
 			description: z.string(),
-			unityValue: z.string()
-			// total: z.string()
+			unityValue: z.string(),
+			discount: z.string().optional(),
+			total: z.string().optional()
 		})
 	),
 	observations: z.string().optional(),
@@ -34,13 +36,13 @@ export const createOrderSchema = z.object({
 
 export type TCreateOrderSchema = z.infer<typeof createOrderSchema>;
 
-function getDateToday() {
+const getDateToday = () => {
 	const date = new Date();
 	const day = date.getDate();
 	const month = date.getMonth() + 1;
 	const year = date.getFullYear();
-	return `${day}/${month < 10 ? `0${month}` : month}/${year}`;
-}
+	return `${day}/${month.toString().padStart(2, '0')}/${year}`;
+};
 
 export const defaultValues: TCreateOrderSchema = {
 	type: EInternalOrderType.ORDER,
@@ -49,6 +51,13 @@ export const defaultValues: TCreateOrderSchema = {
 	phone: '',
 	address: '',
 	vehicles: '',
-	products: [{ quantity: '1', description: '', unityValue: '' }],
+	products: [
+		{
+			quantity: 1,
+			description: '',
+			unityValue: '',
+			total: ''
+		}
+	],
 	orderNumber: ''
 };

@@ -1,6 +1,8 @@
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
+import { useEffect, useState } from 'react';
 import {
 	Button,
+	InputAdornment,
 	Paper,
 	Table,
 	TableBody,
@@ -8,11 +10,10 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	TextField,
-	InputAdornment
+	TextField
 } from '@mui/material';
 
-import { Control, Controller, FieldArrayWithId, UseFieldArrayAppend } from 'react-hook-form';
+import { Control, Controller, FieldArrayWithId, UseFieldArrayAppend, UseFormWatch } from 'react-hook-form';
 import { TCreateOrderSchema } from '../formSchema';
 
 interface PropsTable {
@@ -20,9 +21,25 @@ interface PropsTable {
 	append: UseFieldArrayAppend<TCreateOrderSchema>;
 	fields: FieldArrayWithId<TCreateOrderSchema, 'products', 'id'>[];
 	handleRemoveProduct: (index: number) => void;
+	editMode: boolean;
+	watch: UseFormWatch<TCreateOrderSchema>;
 }
 
-export default function BasicTable({ control, append, fields, handleRemoveProduct }: PropsTable) {
+export default function BasicTable({ control, append, fields, handleRemoveProduct, editMode, watch }: PropsTable) {
+	const [discount, setDiscount] = useState(false);
+
+	function handleDiscount() {
+		setDiscount(!discount);
+	}
+
+	useEffect(() => {
+		if (editMode) {
+			const isThereDiscount = watch('products').some((product) => product.discount);
+
+			if (isThereDiscount) setDiscount(true);
+		}
+	}, [editMode, watch('products')]);
+
 	return (
 		<TableContainer
 			component={Paper}
@@ -36,8 +53,21 @@ export default function BasicTable({ control, append, fields, handleRemoveProduc
 					<TableRow>
 						<TableCell>Quant.</TableCell>
 						<TableCell>Descrição</TableCell>
-						<TableCell align="right">Valor Unit.</TableCell>
-						{/* <TableCell align="right">Total</TableCell> */}
+						<TableCell>Valor Unit.</TableCell>
+						{discount && <TableCell>Desconto</TableCell>}
+						<TableCell align="right">Total</TableCell>
+						<TableCell
+							align="right"
+							className="no-print"
+						>
+							<FuseSvgIcon
+								className="cursor-pointer "
+								color="action"
+								onClick={() => handleDiscount()}
+							>
+								material-solid:money_off
+							</FuseSvgIcon>
+						</TableCell>
 					</TableRow>
 				</TableHead>
 				<TableBody>
@@ -97,15 +127,36 @@ export default function BasicTable({ control, append, fields, handleRemoveProduc
 								/>
 							</TableCell>
 
-							{/* <TableCell align="right">
+							{discount && (
+								<TableCell align="right">
+									<Controller
+										name={`products.${index}.discount`}
+										control={control}
+										render={({ field }) => (
+											<TextField
+												className="w-96"
+												variant="standard"
+												type="number"
+												{...field}
+												InputProps={{
+													startAdornment: <InputAdornment position="start">R$</InputAdornment>
+												}}
+											/>
+										)}
+									/>
+								</TableCell>
+							)}
+
+							<TableCell align="right">
 								<Controller
 									name={`products.${index}.total`}
 									control={control}
 									render={({ field }) => (
 										<TextField
-											className="w-112"
+											className="w-96"
 											variant="standard"
 											type="number"
+											disabled
 											{...field}
 											InputProps={{
 												startAdornment: <InputAdornment position="start">R$</InputAdornment>
@@ -113,8 +164,9 @@ export default function BasicTable({ control, append, fields, handleRemoveProduc
 										/>
 									)}
 								/>
-							</TableCell> */}
-							<TableCell className="no-print">
+							</TableCell>
+
+							<TableCell className="no-print flex">
 								<FuseSvgIcon
 									className="cursor-pointer "
 									color="action"
@@ -128,7 +180,7 @@ export default function BasicTable({ control, append, fields, handleRemoveProduc
 				</TableBody>
 			</Table>
 			<div className="w-full flex justify-end mb-10 no-print">
-				<Button onClick={() => append({ quantity: '1', description: '', unityValue: '' })}>
+				<Button onClick={() => append({ quantity: 1, description: '', unityValue: 0, total: 0 })}>
 					<FuseSvgIcon>heroicons-outline:plus-circle</FuseSvgIcon>
 				</Button>
 			</div>
