@@ -180,7 +180,7 @@ export default function BasicTable({ control, append, fields, handleRemoveProduc
 				</TableBody>
 			</Table>
 			<div className="w-full flex justify-end mb-10 no-print">
-				<Button onClick={() => append({ quantity: 1, description: '', unityValue: 0, total: 0 })}>
+				<Button onClick={() => append({ quantity: 1, description: '', unityValue: '', total: '' })}>
 					<FuseSvgIcon>heroicons-outline:plus-circle</FuseSvgIcon>
 				</Button>
 			</div>
