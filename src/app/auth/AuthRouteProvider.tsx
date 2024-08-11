@@ -19,6 +19,7 @@ export type SignUpPayload = {
 	displayName: string;
 	password: string;
 	email: string;
+	phone: string;
 };
 
 type AuthContext = {

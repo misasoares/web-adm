@@ -47,7 +47,6 @@ export const getCustomers = createAsyncThunk('customers/get', async () => {
 });
 
 export const createCustomer = createAsyncThunk('customer/create', async (data) => {
-	console.log(data);
 	const res = await httpClient.doPost<ICustomers>('customers', data);
 
 	if (res.success) {

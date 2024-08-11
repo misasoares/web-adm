@@ -17,7 +17,8 @@ const schema = z
 		displayName: z.string().min(1, 'Você deve digitar seu nome.'),
 		email: z.string().email('Você deve digitar um email válido.').min(4, 'É necessário adicionar um email.'),
 		password: z.string().min(8, 'Senha muito curta - Deve ter ao menos 8 caracteres.'),
-		passwordConfirm: z.string().min(4, 'É necessário confirmar a senha.')
+		passwordConfirm: z.string().min(4, 'É necessário confirmar a senha.'),
+		phone: z.string()
 		// acceptTermsConditions: z.boolean().refine((val) => val === true, 'The terms and conditions must be accepted.')
 	})
 	.refine((data) => data.password === data.passwordConfirm, {
@@ -29,7 +30,8 @@ const defaultValues = {
 	displayName: '',
 	email: '',
 	password: '',
-	passwordConfirm: ''
+	passwordConfirm: '',
+	phone: ''
 	// acceptTermsConditions: false
 };
 
@@ -47,12 +49,13 @@ function JwtSignUpTab() {
 	const { isValid, dirtyFields, errors } = formState;
 
 	function onSubmit(formData: SignUpPayload) {
-		const { displayName, email, password } = formData;
+		const { displayName, email, password, phone } = formData;
 		jwtService
 			.signUp({
 				displayName,
 				password,
-				email
+				email,
+				phone
 			})
 			.then(() => {
 				navigate('/sign-in');
@@ -102,6 +105,22 @@ function JwtSignUpTab() {
 						type="email"
 						error={!!errors.email}
 						helperText={errors?.email?.message}
+						variant="outlined"
+						required
+						fullWidth
+					/>
+				)}
+			/>
+			<Controller
+				name="phone"
+				control={control}
+				render={({ field }) => (
+					<TextField
+						{...field}
+						className="mb-24"
+						label="Telefone"
+						error={!!errors.phone}
+						helperText={errors?.phone?.message}
 						variant="outlined"
 						required
 						fullWidth

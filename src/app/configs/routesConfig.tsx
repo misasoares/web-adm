@@ -16,6 +16,8 @@ import SignUpConfig from '../main/sign-up/SignUpConfig';
 import UserInterfaceConfigs from '../main/user-interface/UserInterfaceConfigs';
 import InternalOrderConfig from '../main/internalOrder/InternalOrderConfig';
 import CustomerPageConfig from '../main/costumers/CustomerPageConfig';
+import RapidoMSOrder from '../main/rapido-ms/screens/customer-screen/RapidoMsOrderConfig';
+import ProductsConfig from '../main/products/ProductsConfig';
 
 const routeConfigs: FuseRouteConfigsType = [
 	SignOutConfig,
@@ -24,6 +26,8 @@ const routeConfigs: FuseRouteConfigsType = [
 	ChecksConfig,
 	InternalOrderConfig,
 	CustomerPageConfig,
+	RapidoMSOrder,
+	ProductsConfig,
 	...PagesConfigs,
 	...UserInterfaceConfigs,
 	...DashboardsConfigs,

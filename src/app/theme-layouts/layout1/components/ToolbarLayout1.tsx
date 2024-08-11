@@ -32,7 +32,7 @@ function ToolbarLayout1(props: ToolbarLayout1Props) {
 				className={clsx('relative z-20 flex shadow', className)}
 				color="default"
 				sx={{
-					backgroundColor: theme =>
+					backgroundColor: (theme) =>
 						theme.palette.mode === 'light'
 							? toolbarTheme.palette.background.paper
 							: toolbarTheme.palette.background.default
