@@ -4,6 +4,7 @@ import jwtDecode, { JwtPayload } from 'jwt-decode';
 import _ from '@lodash';
 import { PartialDeep } from 'type-fest';
 import { endpoints } from 'src/app/shared/services/endpoints';
+import { access } from 'fs';
 
 const defaultAuthConfig = {
 	tokenStorageKey: 'jwt_access_token',
@@ -154,18 +155,22 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 * Check if the access token is valid
 	 */
 	const isTokenValid = useCallback((accessToken: string) => {
-		if (accessToken) {
-			try {
-				const decoded = jwtDecode<JwtPayload>(accessToken);
-				const currentTime = Date.now() / 1000;
+		/*	jwt never expires	*/
 
-				return decoded.exp > currentTime;
-			} catch (error) {
-				return false;
-			}
-		}
+		return true;
 
-		return false;
+		// if (accessToken) {
+		// 	try {
+		// 		const decoded = jwtDecode<JwtPayload>(accessToken);
+		// 		const currentTime = Date.now() / 1000;
+
+		// 		return decoded.exp > currentTime;
+		// 	} catch (error) {
+		// 		return false;
+		// 	}
+		// }
+
+		// return false;
 	}, []);
 
 	/**
@@ -260,7 +265,7 @@ const useJwtAuth = <User, SignInPayload, SignUpPayload>(
 	 * Sign up
 	 */
 	const signUp = useCallback((data: SignUpPayload) => {
-		const response = axios.post(import.meta.env.VITE_API_KEY + endpoints.signup, data);
+		const response = axios.post(import.meta.env.VITE_API_KEY + endpoints.signup, { ...data, role: 'employees' });
 
 		response.then(
 			(res: AxiosResponse<{ user: User; access_token: string }>) => {

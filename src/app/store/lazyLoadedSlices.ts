@@ -6,6 +6,8 @@ import { checksSlice } from '../main/checks/store/checksSlice';
 import { internalOrderSlice } from '../main/internalOrder/store/internalOrderSlice';
 import apiService from './apiService';
 import { customersSlice } from '../main/costumers/store/customersSlice';
+import { productsSlice } from '../main/products/store/productsSlice';
+
 // eslint-disable-next-line
 // @ts-ignore
 export interface LazyLoadedSlices {}
@@ -18,6 +20,7 @@ export const rootReducer = combineSlices(
 	 */
 	userSlice,
 	checksSlice,
+	productsSlice,
 	customersSlice,
 	internalOrderSlice,
 	fuseSettingsSlice,

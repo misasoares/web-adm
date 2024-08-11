@@ -18,6 +18,7 @@ const navigationConfig: FuseNavItemType[] = [
 		subtitle: 'Ms Controls',
 		type: 'group',
 		icon: 'heroicons-outline:home',
+		auth: ['admin', 'employees'],
 		children: [
 			{
 				id: 'apps.checks',
@@ -42,6 +43,47 @@ const navigationConfig: FuseNavItemType[] = [
 				icon: 'heroicons-outline:user-group',
 				auth: ['admin'],
 				url: '/customers'
+			},
+			{
+				id: 'apps.products',
+				title: 'Produtos',
+				type: 'item',
+				icon: 'feather:battery-charging',
+				auth: ['admin'],
+				url: '/products'
+			}
+		]
+	},
+	{
+		id: 'rapido-ms',
+		title: 'Rápido MS',
+		type: 'group',
+		icon: 'heroicons-outline:home',
+		auth: ['admin', 'customer'],
+		children: [
+			{
+				id: 'rapido-ms.infos',
+				title: 'Mais informações',
+				type: 'item',
+				icon: 'heroicons-outline:information-circle',
+				auth: ['admin', 'customer'],
+				url: '/'
+			},
+			{
+				id: 'rapido-ms.order',
+				title: 'Pedir bateria',
+				type: 'item',
+				icon: 'material-twotone:electric_car',
+				auth: ['admin', 'customer'],
+				url: '/rapido-ms'
+			},
+			{
+				id: 'rapido-ms.products',
+				title: 'Preços',
+				type: 'item',
+				icon: 'heroicons-outline:currency-dollar',
+				auth: ['admin', 'customer'],
+				url: '/'
 			}
 		]
 	}

@@ -1,7 +1,6 @@
-import { useEffect } from 'react';
+import { Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-import DefaultPage from '../components/DefaultPage';
-import TableCustomer from './components/TableCustomers';
+import { useEffect } from 'react';
 import { getCustomers, selectCustomers, selectCustomersLoading } from './store/customersSlice';
 
 export default function CustomerPage() {
@@ -14,11 +13,15 @@ export default function CustomerPage() {
 	}, []);
 
 	return (
-		<DefaultPage
-			title="Lista de clientes"
-			createButton="Adicionar cliente"
-		>
-			<TableCustomer customer={customers} />
-		</DefaultPage>
+		<div className="flex w-full h-full items-center justify-center flex-col">
+			<Typography variant="h4">FUNCIONALIDADE TEMPORARIAMENTE DESABILITADA PELO ADMINISTRADOR</Typography>
+			<Typography>vulgo Misa lindão</Typography>
+		</div>
+		// <DefaultPage
+		// 	title="Lista de clientes"
+		// 	createButton="Adicionar cliente"
+		// >
+		// 	<TableCustomer customer={customers} />
+		// </DefaultPage>
 	);
 }

@@ -214,7 +214,7 @@ export default function OrderPage({ editMode, orderToEdit }: IPropsOrderPage) {
 		if (editMode && orderToEdit) {
 			const formattedOrder = {
 				...orderToEdit,
-				date: orderToEdit.createdAt.toString(), //ajustar
+				date: orderToEdit.createdAt.toString(),
 				costumerName: orderToEdit.costumer.name,
 				phone: orderToEdit.costumer.phone,
 				address: orderToEdit.costumer.address,

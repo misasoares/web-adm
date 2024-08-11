@@ -107,7 +107,7 @@ function NotificationPanel() {
 			</IconButton>
 
 			<FuseScrollbars className="flex flex-col p-16 h-full">
-				{notifications.length > 0 ? (
+				{notifications && notifications.length > 0 ? (
 					<div className="flex flex-auto flex-col">
 						<div className="mb-36 flex items-end justify-between pt-136">
 							<Typography className="text-28 font-semibold leading-none">Notifications</Typography>
